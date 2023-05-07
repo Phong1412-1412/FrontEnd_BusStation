@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import SelectSeat from './SelectSeat';
+import CommentPage from '../CommentPage/index'
 import './css/SelectCarPage.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation } from 'react-router-dom';
@@ -9,7 +10,14 @@ export default function SelectCarPage() {
     const [trips, setTrips] = useState([])
     const [selectedTrip, setSelectedTrip] = useState(null);
     const [selectedCar, setSelectedCar] = useState(null)
+    const [selectedTripId, setSelectedTripId] = useState(null);
 
+    const [isOpen, setIsOpen] = useState(false);
+    function openNewPage(tripId) {
+        setIsOpen(true);
+        setSelectedTripId(tripId);
+    };
+    
     const location = useLocation();
 
     const refetch = async () => {
@@ -137,6 +145,25 @@ export default function SelectCarPage() {
                                                     <FontAwesomeIcon icon={['fas', 'chair']} />
                                                 </i>
                                                 <p>25 Empty Seat</p>
+                                            </div>
+                                            <div>
+                                                <p>|</p>
+                                            </div>
+                                            <div>
+                                                <button onClick={() => openNewPage(trip.tripId)}>Comment</button>
+                                                {   
+                                                    isOpen && (
+                                                        <div class="overlay">
+                                                        <div className='comments-page'>
+                                                        <button onClick={() => {
+                                                            setIsOpen(false);
+                                                            setSelectedTripId(null)
+                                                        }} className='close'>Close</button>
+                                                        <CommentPage data ={selectedTripId} isOpen/>
+                                                        </div>
+                                                        </div>
+                                                    )
+                                                }
                                             </div>
                                         </div>
                                         {(selectedCar && selectedTrip.tripId === trip.tripId)

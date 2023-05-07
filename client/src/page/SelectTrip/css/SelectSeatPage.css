@@ -43,8 +43,6 @@
 
 }
 
-.seat-map {}
-
 .seat-map__desk-title {
     display: flex;
     justify-content: space-around;
