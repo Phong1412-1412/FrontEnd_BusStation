@@ -19,7 +19,7 @@ function Register(props) {
 			return;
 		}
 
-		message.success("register success!")
+		message.success("Registration successful. Check email to activate account!")
 		navigate('/login');
 	}
 	const validateFullname = (_, value) => {
