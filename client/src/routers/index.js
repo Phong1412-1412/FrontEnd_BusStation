@@ -2,6 +2,8 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Home from '../page/Home';
 import Login from '../page/Login';
+import ForgotPassword from '../page/ForgotPassword';
+import ResetPassword from '../page/ResetPassword';
 import Register from '../page/Register';
 import Profile from '../page/Profile';
 import ProvideContactDetails from '../page/ProvideContactDetails';
@@ -20,6 +22,8 @@ function Router() {
 		<Routes>
 			<Route path='/' element={<Home />} />
 			<Route path='/login' element={<Login />} />
+			<Route path='/forgot-password' element={<ForgotPassword/>} />
+			<Route path="/reset-password/:token" element={<ResetPassword/>} />
 			<Route path='/register' element={<Register />} />
 			<Route path='/contact-detail' element={<ProvideContactDetails />} />
 			<Route path='/passenger-detail' element={<ProvidePassengerDetails />} />

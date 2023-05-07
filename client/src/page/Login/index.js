@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 function Login() {
+	
 	const [form] = Form.useForm();
 
 	const { signIn, user } = useAuth()
@@ -18,13 +19,17 @@ function Login() {
 			navigate('/')
 		}
 	}, [user])
+	const handleGoogleLogin = () => {
+		window.location = 'http://localhost:9999/oauth2/authorization/google';
+	}
 
 	const handleSubmit = async (value) => {
 		await signIn(value.username, value.password)
 	}
+	
 	return (
 		<div className='appBg'>
-			<Typography.Title className='title'>Login</Typography.Title>
+			<Typography.Title className='title'>LOGIN FOR BOOKING</Typography.Title>
 			<Form onFinish={handleSubmit} form={form} className='loginForm' >
 				<Form.Item
 					rules={[{
@@ -61,6 +66,9 @@ function Login() {
 					name={'password'}>
 					<Input.Password className='input' prefix={<LockFilled className="site-form-item-icon" />} placeholder='Enter Password' />
 				</Form.Item>
+				<Form.Item className='forgot-password'>
+					<Link to='/forgot-password'>Forgot password?</Link>
+				</Form.Item>
 
 				<Form.Item className='form-item-login'>
 					<div className='wrap-btn'>
@@ -72,12 +80,14 @@ function Login() {
 				</Form.Item>
 				<div className='to-register'>
 					<span style={{ fontWeight: '700' }}>
-						Don't have an account?
+						Don't have an account ?
 					</span>
-					<Link style={{ fontWeight: '700' }} to='/register'>Sign Up</Link>
+					<Link style={{ fontWeight: '700' }} to='/register'>Register</Link>
 				</div>
 			</Form>
-
+				<div>
+					<button onClick={handleGoogleLogin}>Login with Google</button>
+				</div>
 		</div>
 	);
 }
