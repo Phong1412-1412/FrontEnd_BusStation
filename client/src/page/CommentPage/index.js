@@ -113,7 +113,23 @@ function CommentPage(props) {
               <div className="message" key={comment.id}>
                <div class="avatar"></div>
                     <div class="message-content">
-                        <div class="user-name">{comment.user.fullName}</div>
+                      {
+                        comment.user &&
+                        (
+                          comment.user?.roleId === "ADMIN"
+                           ? (
+                            <div class="user-name" style={{color: 'red'}}>{comment.user.fullName}: admin</div>
+                           ) : comment.user?.roleId === "DRIVER" ?
+                           (
+                            <div class="user-name" style={{color: 'blue'}}>{comment.user.fullName}: driver</div>
+                           )
+                           : 
+                           (
+                            <div class="user-name">{comment.user.fullName}</div>
+                           )
+                        )
+
+                      }
                         <div class="message-text">{comment.content}</div>
                         <div class="message-time">{comment.createdAt}</div>
                     </div>
