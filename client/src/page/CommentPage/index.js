@@ -11,7 +11,6 @@ import axios from 'axios';
 
 function CommentPage(props) {
   const [content, setContent] = useState('');
-  const [rating, setRating] = useState('');
   const [comments, setComments] = useState([])
   const [stompClient, setStompClient] = useState(null);
   const { accessToken, user } = useAuth()
@@ -66,7 +65,7 @@ function CommentPage(props) {
     .catch((err) => console.error(err));
   },[])
 
-  const addComment = async (content, rating) => {
+  const addComment = async (content) => {
     try {
       const response = await fetch(`${BASE_URL}/api/v1/trips/${props.data}/comments`, {
         method: 'POST',
@@ -75,8 +74,7 @@ function CommentPage(props) {
           'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
-          content,
-          rating
+          content
         }),
       });
       if (!response.ok) {
@@ -96,9 +94,8 @@ function CommentPage(props) {
         return;
       }
     event.preventDefault();
-    addComment(content, rating);
+    addComment(content);
     setContent('');
-    setRating('');
   };
 
   return (
@@ -150,15 +147,6 @@ function CommentPage(props) {
             placeholder="Your content"
             value={content}
             onChange={(event) => setContent(event.target.value)}
-          />
-          <label htmlFor="rate">Nhập Rate</label>
-          <input
-            type="number"
-            id="rate"
-            name="rate"
-            placeholder="Your Rate"
-            value={rating}
-            onChange={(event) => setRating(event.target.value)}
           />
           <input type="submit" value="Send" />
         </form> 
