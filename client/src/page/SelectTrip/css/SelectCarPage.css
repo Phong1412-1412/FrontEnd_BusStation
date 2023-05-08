@@ -4,6 +4,14 @@
     align-items: center;
 }
 
+@keyframes sca {
+    from {
+        scale: 1;
+    }
+    to {
+        scale: 1.1;
+    }
+}
 .select-car-page__title {
     font-style: normal;
     font-weight: 500;
@@ -20,6 +28,8 @@
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 8px;
 }
+
+
 
 .car__type-price {
     display: flex;
@@ -130,8 +140,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    animation: fadeIn 1s ease-in-out forwards;
+    opacity: 0;
   }
 
+  @keyframes fadeIn {
+    from {
+      opacity: 0; /* Giá trị opacity ban đầu là 0 */
+    }
+    to {
+      opacity: 1; /* Giá trị opacity cuối cùng là 1 */
+    }
+  }
   .comments-page {
     width: 65%;
     max-height: 90vh; /* giống như của bạn */

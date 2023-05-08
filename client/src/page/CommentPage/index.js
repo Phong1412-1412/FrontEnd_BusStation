@@ -11,7 +11,8 @@ import axios from 'axios';
 
 function CommentPage(props) {
   const [content, setContent] = useState('');
-  const [comments, setComments] = useState([])
+  const [comments, setComments] = useState([]);
+
   const [stompClient, setStompClient] = useState(null);
   const { accessToken, user } = useAuth()
   const navigate = useNavigate()

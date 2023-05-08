@@ -155,11 +155,11 @@ export default function SelectCarPage() {
                                                     isOpen && (
                                                         <div class="overlay">
                                                         <div className='comments-page'>
-                                                        <button onClick={() => {
+                                                        <button onClick={() => {        
                                                             setIsOpen(false);
                                                             setSelectedTripId(null)
                                                         }} className='close'>Close</button>
-                                                        <CommentPage data ={selectedTripId} isOpen/>
+                                                        <CommentPage data ={selectedTripId} trip={trip}/>
                                                         </div>
                                                         </div>
                                                     )
@@ -175,6 +175,7 @@ export default function SelectCarPage() {
                                                             <div>
                                                                 <h5>Car number {car.carNumber}</h5>
                                                                 <p>Seats: {car.chair.length}</p>
+                                                                <p>Empty: {car.emptySeats}</p>
                                                             </div>
                                                             <div>
                                                                 <button onClick={() => handleSelectCar(car)}>Select</button>
