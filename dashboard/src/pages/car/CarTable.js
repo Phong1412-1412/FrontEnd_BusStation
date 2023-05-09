@@ -12,6 +12,7 @@ import ScheduleFormModal from "./ScheduleForm";
 const tableData = {
     columns: [
         { name: "car_number", align: "center" },
+        { name: "type_car", align: "center" },
         { name: "seats", align: "center" },
         { name: "trips", align: 'center' },
         { name: "status", align: "center" },
@@ -113,6 +114,11 @@ const CarTable = () => {
                             car_number: (
                                 <ArgonTypography variant="caption" color="secondary" fontWeight="bold">
                                     {car.carNumber}
+                                </ArgonTypography>
+                            ),
+                            type_car: (
+                                <ArgonTypography variant="caption" color="secondary" fontWeight="bold">
+                                    {car.typeCar.typeCarName}
                                 </ArgonTypography>
                             ),
                             status: (

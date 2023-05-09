@@ -141,15 +141,6 @@ export default function SelectCarPage() {
                                                 <p>|</p>
                                             </div>
                                             <div>
-                                                <i>
-                                                    <FontAwesomeIcon icon={['fas', 'chair']} />
-                                                </i>
-                                                <p>25 Empty Seat</p>
-                                            </div>
-                                            <div>
-                                                <p>|</p>
-                                            </div>
-                                            <div>
                                                 <button onClick={() => openNewPage(trip.tripId)}>Comment</button>
                                                 {   
                                                     isOpen && (
@@ -173,7 +164,7 @@ export default function SelectCarPage() {
                                                     {trip.car.map((car, id) => (
                                                         <div className='car-list__item' key={id}>
                                                             <div>
-                                                                <h5>Car number {car.carNumber}</h5>
+                                                                <h5> {car.typeCar.typeCarName} - Number {car.carNumber}</h5>
                                                                 <p>Seats: {car.chair.length}</p>
                                                                 <p>Empty: {car.emptySeats}</p>
                                                             </div>

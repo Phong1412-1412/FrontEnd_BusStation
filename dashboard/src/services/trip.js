@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { BASE_URL } from 'constant/network'
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 100
 
 async function getAllTrip(pageNumber, place) {
     try {

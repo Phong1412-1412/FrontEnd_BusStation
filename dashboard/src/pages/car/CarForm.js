@@ -1,4 +1,4 @@
-import { Alert, Checkbox, FormControlLabel, Modal } from "@mui/material"
+import { Alert, Checkbox, FormControl, FormControlLabel, MenuItem, Modal, Select, TextField, Tooltip,InputLabel } from "@mui/material"
 import ArgonBox from "components/ArgonBox"
 import ArgonButton from "components/ArgonButton";
 import ArgonInput from "components/ArgonInput";
@@ -6,6 +6,7 @@ import ArgonTypography from "components/ArgonTypography"
 import { useEffect, useState } from "react";
 import { editCar } from "services/car";
 import { createCar, deleteCar } from "services/car";
+import {getAllTypeCar} from "services/typeCar";
 
 const style = {
     position: 'absolute',
@@ -20,26 +21,44 @@ const style = {
 
 const initialFormData = {
     carNumber: "",
-    numberOfChair: 30,
+    typeCarId: 1,
     status: true
 };
 
-const CarFormModal = ({ car, open, handleClose, refresh, mode }) => {
+const initialTypeCarFormData = {
+    typeCarId: 1,
+    typeCarName: "Limousine 9 chỗ",
+    totalChairs: 9
+};
+
+
+const CarFormModal = ({ car, open, handleClose, refresh, mode}) => {
     const [formData, setFormData] = useState(initialFormData);
+    const [typeCarFromData, setTypeCarFromData] = useState(initialTypeCarFormData);
     const [formError, setFormError] = useState("")
     const [formSuccess, setFormSuccess] = useState(false)
+    const [typeCar , setTypeCar] = useState([])
+
 
 
     useEffect(() => {
         if (car) {
-            const { carNumber, numberOfChair, status, tripId } = car
+            const { carNumber, typeCarId, status, tripId } = car
             setFormData({
                 carNumber,
-                numberOfChair: 30,
+                typeCarId,
                 status
             })
         }
     }, [car])
+
+    useEffect(() => {
+        (async () => {
+            const typeCarDT = await getAllTypeCar()
+            setTypeCar(typeCarDT)
+            console.log(typeCar)
+        })()
+    }, [])
 
 
     const onHandleClose = () => {
@@ -141,17 +160,25 @@ const CarFormModal = ({ car, open, handleClose, refresh, mode }) => {
                         disabled={mode === "VIEW"}
                     />
 
-                    <ArgonInput
-                        name="numberOfChair"
-                        placeholder="Number Of Chair*"
-                        value={formData.numberOfChair}
-                        onChange={handleInputWithNumberChange}
-                        sx={{ my: 1 }}
-                        type="number"
-                        required
-                        disabled
-                        fullWidth
-                    />
+                    <FormControl variant="outlined" fullWidth sx={{ my: 1 }}>
+                            <InputLabel id="select-type-car-label">Select type car*</InputLabel>
+                            <Select
+                            labelId="select-type-car-label"
+                            name="typeCarId"
+                            value={formData.typeCarId}
+                            onChange={handleInputWithNumberChange}
+                            label="Select type car*"
+                            required
+                            disabled={mode === "VIEW"}
+                            >
+                            <MenuItem value=""></MenuItem>
+                            {typeCar.map((option) => (
+                                <MenuItem key={option.typeCarId} value={option.typeCarId}>
+                                {option.typeCarName} - {option.totalChairs} seats
+                                </MenuItem>
+                            ))}
+                            </Select>
+                        </FormControl>
 
                     <FormControlLabel
                         control={
