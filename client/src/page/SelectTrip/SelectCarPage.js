@@ -5,12 +5,21 @@ import './css/SelectCarPage.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useLocation } from 'react-router-dom';
 import { searchTrip } from '../../services/trip';
+import {getAllTypeCar} from '../../services/typeCar';
 
 export default function SelectCarPage() {
     const [trips, setTrips] = useState([])
     const [selectedTrip, setSelectedTrip] = useState(null);
     const [selectedCar, setSelectedCar] = useState(null)
     const [selectedTripId, setSelectedTripId] = useState(null);
+    const [selectedCarType, setSelectedCarType] = useState([]);
+    const [carType, setTypeCar] = useState(0);
+    useEffect(() => {
+        (async () => {
+            const typeCarDT = await getAllTypeCar()
+            setSelectedCarType(typeCarDT)
+        })()
+    }, [])
 
     const [isOpen, setIsOpen] = useState(false);
     function openNewPage(tripId) {
@@ -34,7 +43,6 @@ export default function SelectCarPage() {
     useEffect(() => {
         const searchResult = location.state && location.state.data ? location.state.data : [];
         const { content } = searchResult;
-
         setTrips(content)
     }, [location])
 
@@ -157,21 +165,36 @@ export default function SelectCarPage() {
                                                 }
                                             </div>
                                         </div>
+                                        <div className='select-car-type'>
+                                        <label htmlFor='car-type'>Select car type:</label>
+                                        <select id='car-type' value={carType} 
+                                            onChange={(e) => {
+                                                const selectedCarType = Number(e.target.value);
+                                                setTypeCar(isNaN(selectedCarType) ? 0 : selectedCarType);
+                                             }}>
+                                            <option value=''>All</option>
+                                            {selectedCarType?.map((carType, id) => (
+                                            <option key={id} value={carType.typeCarId}>{carType.typeCarName}</option>
+                                            ))}
+
+                                        </select>
+                                        </div>
                                         {(selectedCar && selectedTrip.tripId === trip.tripId)
                                             ? <SelectSeat trip={selectedTrip} car={selectedCar} />
                                             : (
                                                 <div style={{ display: trip.tripId === selectedTrip?.tripId ? 'block' : 'none' }} className='car-list'>
-                                                    {trip.car.map((car, id) => (
-                                                        <div className='car-list__item' key={id}>
-                                                            <div>
-                                                                <h5> {car.typeCar.typeCarName} - Number {car.carNumber}</h5>
-                                                                <p>Seats: {car.chair.length}</p>
-                                                                <p>Empty: {car.emptySeats}</p>
+                                                    {trip.car.filter((car) => carType === 0 || car.typeCar.typeCarId === carType).map((car, id) => (
+                                                            <div className='car-list__item' key={id}>
+                                    
+                                                                <div>
+                                                                    <h5> {car.typeCar.typeCarName} - Number {car.carNumber}</h5>
+                                                                    <p>Seats: {car.chair.length}</p>
+                                                                    <p>Empty: {car.emptySeats}</p>
+                                                                </div>
+                                                                <div>
+                                                                    <button onClick={() => handleSelectCar(car)}>Select</button>
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                <button onClick={() => handleSelectCar(car)}>Select</button>
-                                                            </div>
-                                                        </div>
                                                     ))}
                                                 </div>
                                             )}

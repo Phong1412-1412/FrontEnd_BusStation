@@ -173,3 +173,25 @@
     height: 5vh;
     background-color: rgb(241, 149, 149);
   }
+
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .select-car-type {
+    margin-bottom: 20px;
+  }
+  
+  .select-car-type label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .select-car-type select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
