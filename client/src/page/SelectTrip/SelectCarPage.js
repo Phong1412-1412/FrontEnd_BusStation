@@ -165,7 +165,7 @@ export default function SelectCarPage() {
                                                 }
                                             </div>
                                         </div>
-                                        <div className='select-car-type'>
+                                        <div className='select-car-type' style={{ display: trip.tripId === selectedTrip?.tripId ? 'block' : 'none' }}>
                                         <label htmlFor='car-type'>Select car type:</label>
                                         <select id='car-type' value={carType} 
                                             onChange={(e) => {
