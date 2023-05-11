@@ -6,22 +6,27 @@ import { Link, useNavigate } from 'react-router-dom';
 import { register } from '../../services/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-
+import React, {useState } from 'react';
 function Register(props) {
 	const [form] = Form.useForm();
-
+	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
 
 	const handleSubmit = async (value) => {
-		const result = await register(value.username, value.password, value.fullname, value.phoneNumber, value.email, value.address)
-		if (!result) {
-			message.error("register fail!")
-			return;
+		setIsLoading(true);
+		try {
+		  const result = await register(value.username, value.password, value.fullname, value.phoneNumber, value.email, value.address);
+		  if (!result) {
+			throw new Error("Register fail!");
+		  }
+		  message.success("Registration successful. Check email to activate account!");
+		  navigate('/login');
+		} catch (error) {
+		  message.error(error.message);
+		} finally {
+		  setIsLoading(false);
 		}
-
-		message.success("Registration successful. Check email to activate account!")
-		navigate('/login');
-	}
+	  };	  
 	const validateFullname = (_, value) => {
 		const trimmedValue = value.trim();
 		const words = trimmedValue.split(' ');
@@ -217,7 +222,12 @@ function Register(props) {
 				</Form.Item>
 				<Form.Item className='form-item-register'>
 					<div className='wrap-btn'>
-						<button className='btn-register' htmlType='submit'>REGISTER </button>
+						{!isLoading && (
+							<button className='btn-login' htmlType='submit'>REGISTER</button>
+						)}
+						{isLoading && (
+							<button className='btn-login' style={{textAlign: 'center'}}>Loading...</button>
+						)}
 						<i className='arrow-icon'>
 							<FontAwesomeIcon icon={faArrowRight} />
 						</i>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {useState ,useEffect } from 'react';
 import './style.css';
 import { Form, Input, Typography } from 'antd';
 import { LockFilled, UserOutlined } from '@ant-design/icons';
@@ -10,6 +10,7 @@ import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 function Login() {
 	
 	const [form] = Form.useForm();
+	const [isLoading, setIsLoading] = useState(false);
 
 	const { signIn, user } = useAuth()
 	const navigate = useNavigate()
@@ -24,7 +25,15 @@ function Login() {
 	}
 
 	const handleSubmit = async (value) => {
-		await signIn(value.username, value.password)
+		setIsLoading(true);
+		try {
+			await signIn(value.username, value.password)
+		} catch (error) {
+			console.log("login error: " + error)
+		}
+		finally {
+			setTimeout(() => {setIsLoading(false);},2000)
+		}
 	}
 	
 	return (
@@ -72,10 +81,16 @@ function Login() {
 
 				<Form.Item className='form-item-login'>
 					<div className='wrap-btn'>
-						<button className='btn-login' htmlType='submit'>LOGIN </button>
+						{!isLoading && (
+							<button className='btn-login' htmlType='submit'>LOGIN </button>
+						)}
+						{isLoading && (
+							<button className='btn-login'>Loading...</button>
+						)}
 						<i className='arrow-icon'>
 							<FontAwesomeIcon icon={faArrowRight} />
 						</i>
+						
 					</div>
 				</Form.Item>
 				<div className='to-register'>

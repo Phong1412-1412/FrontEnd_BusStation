@@ -14,6 +14,7 @@ export default function SelectSeat({ trip, car }) {
     const [order, setOrder] = useState(null)
     const [selectedSeats, setSelectedSeats] = useState([])
     const [disabledSeats, setDisabledSeats] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
     const [seats, setSeats] = useState(car.chair)
 
@@ -207,21 +208,29 @@ export default function SelectSeat({ trip, car }) {
     }
 
     const onSubmitOrder = async () => {
-        if (!order || !order?.orderId) {
-            message.error("Please pick a car before submit order !")
-            return;
+        setIsLoading(true);
+        try {
+            if (!order || !order?.orderId) {
+                message.error("Please pick a car before submit order !")
+                return;
+            }
+    
+            const data = await submitOrder({ orderId: order.orderId, tripId: trip.tripId })
+    
+            if (!data) {
+                message.error("Oops! Something went wrong @@")
+                return;
+            }
+    
+            localStorage.removeItem("order_" + order.orderId);
+            message.success("Create order successfully !")
+            navigate("/my-booking")
+        } catch (error) {
+            alert("Booking failed");
         }
-
-        const data = await submitOrder({ orderId: order.orderId, tripId: trip.tripId })
-
-        if (!data) {
-            message.error("Oops! Something went wrong @@")
-            return;
+        finally{
+            setIsLoading(false);
         }
-
-        localStorage.removeItem("order_" + order.orderId);
-        message.success("Create order successfully !")
-        navigate("/my-booking")
     }
 
     return (
@@ -372,7 +381,9 @@ export default function SelectSeat({ trip, car }) {
                     <p >Seats: {seats.length}</p>
                 </div>
                 <div>
-                    <button className="btn-choose" onClick={() => onSubmitOrder()}>Continue</button>
+                    {!isLoading && ( <button className="btn-choose" onClick={() => onSubmitOrder()}>Continue</button>)}
+                   
+                    {isLoading && ( <button className="btn-choose">Loading...</button>)}
                 </div>
             </div>
         </div>
