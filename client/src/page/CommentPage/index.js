@@ -90,7 +90,7 @@ function CommentPage(props) {
 
   const handleSubmit = (event) => {
       if(!user) {
-        message.error("You need to login to continue select a seat!")
+        message.error("You need to login to continue comment!")
         navigate("/login")
         return;
       }
