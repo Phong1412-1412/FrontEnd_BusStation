@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef} from 'react';
 import { useAuth } from '../../contexts/auth'
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { BASE_URL } from '../../constant/network';
-import { message } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { message } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsisV,faReply,faCopy,faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import "./style.css";
 import axios from 'axios';
@@ -66,7 +68,7 @@ function CommentPage(props) {
     .catch((err) => console.error(err));
   },[])
 
-  const addComment = async (content) => {
+  const addComment = async (content, parentId) => {
     try {
       const response = await fetch(`${BASE_URL}/api/v1/trips/${props.data}/comments`, {
         method: 'POST',
@@ -75,7 +77,8 @@ function CommentPage(props) {
           'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify({
-          content
+          content,
+          parentId
         }),
       });
       if (!response.ok) {
@@ -90,69 +93,120 @@ function CommentPage(props) {
 
   const handleSubmit = (event) => {
       if(!user) {
-        message.error("You need to login to continue select a seat!")
+        message.error("You need to login to continue comment!")
         navigate("/login")
         return;
       }
     event.preventDefault();
-    addComment(content);
+    addComment(content, parentId);
     setContent('');
+    setParentId(null);
+    setReplyContent('');
+  };
+
+  //rely comment
+
+  const title = "Comment for the trip from "+props.trip.provinceStart+ " to " +props.trip.provinceEnd;
+
+  const [showOptions, setShowOptions] = useState(false);
+
+  const [replyContent, setReplyContent] = useState('');
+  const [parentId, setParentId] = useState(null);
+  const [selectedComment, setSelectedComment] = useState(null);
+  const messageInputRef = useRef(null);
+  
+  const handleOptionsClick = (commentId) => {
+    setShowOptions((prevState) => ({
+      ...prevState,
+      [commentId]: !prevState[commentId],
+    }));
+  };
+
+  const handleReplyClick = (content, commentId) => {
+    messageInputRef.current.focus();
+
+    setReplyContent(content);
+    setParentId(commentId);
+    const comment = comments?.content.find((comment) => comment.commentId === commentId);
+    setSelectedComment(comment);
+
+    setShowOptions(!showOptions);
+  };
+
+  const handleCopyClick = (content) => {
+    navigator.clipboard.writeText(content);
+    setShowOptions(!showOptions);
   };
 
   return (
-  <div>
-      <div class="chat-header">
-                <h1>COMMENTS THIS TRIP</h1>
-      </div>
-      <div className="chat-messages">
-        {
-          comments?.content?.map((comment) =>
-            (
-              <div className="message" key={comment.id}>
-               <div class="avatar"></div>
-                    <div class="message-content">
-                      {
-                        comment.user &&
-                        (
-                          comment.user?.roleId === "ADMIN"
-                           ? (
-                            <div class="user-name" style={{color: 'red'}}>{comment.user.fullName}: admin</div>
-                           ) : comment.user?.roleId === "DRIVER" ?
-                           (
-                            <div class="user-name" style={{color: 'blue'}}>{comment.user.fullName}: driver</div>
-                           )
-                           : 
-                           (
-                            <div class="user-name">{comment.user.fullName}</div>
-                           )
-                        )
+      <div>
+          <div className="chat-header">
+              <h1>{title}</h1>
+          </div>
 
-                      }
-                        <div class="message-text">{comment.content}</div>
-                        <div class="message-time">{comment.createdAt}</div>
+          <div className="chat-messages">
+              {comments?.content?.map((comment) => {
+                const userRole = comment.user?.roleId;
+                const nameColor = userRole === 'ADMIN' ? 'red' : userRole === 'DRIVER' ? 'blue' : 'black';
+                const roleName = userRole === 'ADMIN' ? ' : admin' : userRole === 'DRIVER' ? ' : driver' : '';
+                return (
+                  <div className="message left" key={comment.commentId}>
+                    <div className={`message-content ${comment.relyComment ? 'reply' : 'comment'}`}>
+                        <div className="user-name" style={{ color: nameColor }}>
+                          {comment.user?.fullName}{roleName}
+                        </div>
+                        {comment.relyComment && (
+                          <div className="reply-content">
+                            Rely to {comment.relyComment.user?.fullName}: {comment.relyComment.content}
+                          </div>
+                        )}
+                        <div className="message-text">{comment.content}</div>
+                        <div className="message-time">{comment.createdAt}</div>
+                        <div className="options-icon" onClick={() => handleOptionsClick(comment.commentId)}>
+                            <FontAwesomeIcon icon={faEllipsisV} />
+                        </div>
+                        {showOptions[comment.commentId] && (
+                          <div className="options-menu">
+                            <div className="option" onClick={() => handleReplyClick(comment.content, comment.commentId)}>
+                              <FontAwesomeIcon icon={faReply} /> Rely
+                            </div>
+                            <div className="option" onClick={() => handleCopyClick(comment.content)}>
+                              <FontAwesomeIcon icon={faCopy} /> Coppy message
+                            </div>
+                          </div>
+                        )}
                     </div>
-              </div>
-            )
-          )
-        }
-       
-      </div>
-
-      <div className="chat-input">
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="send">Nhập tin nhắn</label>
-          <input
-            type="text"
-            id="send"
-            name="send"
-            placeholder="Your content"
-            value={content}
-            onChange={(event) => setContent(event.target.value)}
-          />
-          <input type="submit" value="Send" />
-        </form> 
-      </div>
-    </div>
+                  </div>
+                );
+              })}
+          </div>
+          <div class="chat-input">
+              {replyContent && (
+                <div className="reply-content-form">
+                  Rely to {selectedComment.user?.fullName}: {replyContent}
+                  <div className="close-icon" onClick={() => {
+                    setReplyContent(null);
+                    setParentId(null);
+                  }}>
+                    <FontAwesomeIcon icon={faTimes} />
+                  </div>
+                </div>
+              )}
+              <form onSubmit={handleSubmit}>
+                  <input type="hidden" name="parentId" value={parentId} />
+                  <input
+                    ref={messageInputRef}
+                    type="text"
+                    id="send"
+                    name="send"
+                    placeholder="Enter your message..."
+                    value={content}
+                    onChange={(event) => setContent(event.target.value)}
+                  />
+                  <input type="submit" value="Send" />
+              </form>
+          </div>
+  </div>
   );
 }
 

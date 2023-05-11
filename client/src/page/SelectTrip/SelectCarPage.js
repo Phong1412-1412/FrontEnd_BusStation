@@ -152,15 +152,15 @@ export default function SelectCarPage() {
                                                 <button onClick={() => openNewPage(trip.tripId)}>Comment</button>
                                                 {   
                                                     isOpen && (
-                                                        <div class="overlay">
+                                                    <div class="overlay">
                                                         <div className='comments-page'>
                                                         <button onClick={() => {        
                                                             setIsOpen(false);
-                                                            setSelectedTripId(null)
-                                                        }} className='close'>Close</button>
-                                                        <CommentPage data ={selectedTripId} trip={trip}/>
+                                                            setSelectedTripId(null);
+                                                        }} className='close'>&times;</button>
+                                                        <CommentPage data={selectedTripId} trip={trip}/>
                                                         </div>
-                                                        </div>
+                                                    </div>
                                                     )
                                                 }
                                             </div>

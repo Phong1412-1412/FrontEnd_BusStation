@@ -1,9 +1,9 @@
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 .chat-header {
     background-color: #333333;
     color: white;
@@ -26,6 +26,10 @@
     align-items: center;
 }
 
+.left {
+    justify-content: flex-start;
+}
+
 .avatar {
     width: 40px;
     height: 40px;
@@ -37,16 +41,13 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
 .user-name {
     font-weight: bold;
-}
-
-.message-text {
-    background-color: #f2f2f2;
-    padding: 0.5rem;
-    border-radius: 10px;
 }
 
 .message-time {
@@ -55,27 +56,124 @@
 }
 
 .chat-input {
-    width: 100%;
+    margin-bottom: 20px;
+}
+
+.chat-input form {
+    display: flex;
+    align-items: flex-start;
     background-color: #f2f2f2;
     padding: 1rem;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
     justify-content: space-between;
+    gap: 1rem;
 }
 
-input[type="text"] {
-    flex: 1;
-    padding: 0.5rem;
-    border-radius: 10px;
-    border: none;
+.chat-input input[type="text"],
+.chat-input input[type="submit"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    outline: none;
 }
 
-button[type="submit"] {
+.chat-input input[type="text"] {
+    width: 100%;
+}
+
+.chat-input input[type="submit"] {
+    padding: 10px 20px;
     background-color: #333333;
     color: white;
-    padding: 0.5rem 1rem;
     border: none;
-    border-radius: 10px;
+    cursor: pointer;
 }
 
+.chat-input input[type="submit"]:hover {
+    background-color: rgb(83, 85, 84);
+}
+
+.comment {
+    background-color: #f2f9fc; 
+}
+ 
+.reply {
+    background-color: #f2f9fc; 
+}
+  
+.reply-content {
+    color: #41484f; 
+    background-color: #e6f7ff;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.message-content {
+    position: relative;
+}
+  
+  .options-icon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 5px;
+    /* Thêm các thuộc tính khác tùy theo yêu cầu của bạn */
+  }
+  .options-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    z-index: 999; /* Đặt giá trị z-index lớn để đẩy menu lên phía trước */
+  }
+  
+  .option {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .option:hover {
+    background-color: #f2f2f2;
+  }
+  
+  .chat-input {
+    position: relative;
+  }
+  
+  .reply-content-form {
+    color: #41484f;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-left: 15px;
+    margin-right: 15px;
+  }
+  
+  .close-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    margin-right: 15px;
+    cursor: pointer;
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
