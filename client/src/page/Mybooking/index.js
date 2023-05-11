@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Divider, Typography } from 'antd';
+import { Divider } from 'antd';
 import './style.css';
 import { faArrowRightLong } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../contexts/auth';
 import { getOderByUser } from '../../services/mybooking';
 import BookingDetails from '../BookingDetails';
-
-const { Text } = Typography;
+import { BASE_URL } from '../../constant/network';
 
 function Mybooking() {
   const [getDetail, setGetDetail] = useState(null);
@@ -31,6 +30,39 @@ function Mybooking() {
     }
   };
 
+
+  const handleDeleteOrder = async (orderId) => {
+    try {
+      const confirmed = window.confirm("Are you sure you want to cancel this order?");
+    if (!confirmed) {
+      return;
+    }
+      const request = await fetch(`${BASE_URL}/api/v1/orders/cancellingInvoice/${orderId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
+        orderId
+      }),
+      
+    });
+    const updatedOrders = order.filter((order) => order.orderId !== orderId);
+    setOrder(updatedOrders);
+    if (!request.ok) {
+      throw new Error('Something went wrong!');
+    }
+    } catch (error) {
+      console.error(error);
+    }
+ }
+
+ function deleteOrder(orderId) {
+    console.log(orderId);
+    handleDeleteOrder(orderId);
+ }
   return (
     <div className='my-booking'>
       <div className='booking-items'>
@@ -57,13 +89,17 @@ function Mybooking() {
                 {new Intl.NumberFormat().format(detail.sumOrder)}đ
               </div>
             </div>
+            
             <div className='open-detail'>
-              <button
-                onClick={() => onClickOrder(detail, index)}
-                style={{ backgroundColor: '#2187b6', padding: '5px 10px', borderRadius: '10px' }}
-              >
-                {openDetail === index ? 'Close' : 'Detail'}
-              </button>
+              <div className='open-button'>
+                  <button
+                    onClick={() => onClickOrder(detail, index)}
+                    style={{ backgroundColor: '#2187b6', padding: '5px 10px', borderRadius: '10px' }}
+                  >
+                    {openDetail === index ? 'Close' : 'Detail'}
+                  </button>
+                  <button onClick={() => deleteOrder(detail.orderId)} style={{ backgroundColor: '#b62121', padding: '5px 10px', borderRadius: '10px' }}>Cancel</button>
+              </div>
               {openDetail === index && <BookingDetails bookingDetail={getDetail} />}
             </div>
           </div>
