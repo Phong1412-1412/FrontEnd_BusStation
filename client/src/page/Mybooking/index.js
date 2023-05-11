@@ -1,96 +1,76 @@
 import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Select, Divider, Typography, } from 'antd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Divider, Typography } from 'antd';
 import './style.css';
 import { faArrowRightLong } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../contexts/auth';
 import { getOderByUser } from '../../services/mybooking';
 import BookingDetails from '../BookingDetails';
 
+const { Text } = Typography;
 
 function Mybooking() {
-	const [getDetail, setGetDetail] = useState();
-	const [order, setOrder] = useState([]);
-	const [openDetail, setOpenDetail] = useState();
-	const { accessToken } = useAuth();
+  const [getDetail, setGetDetail] = useState(null);
+  const [order, setOrder] = useState([]);
+  const [openDetail, setOpenDetail] = useState(null);
+  const { accessToken } = useAuth();
 
-	useEffect(() => {
-		getOderByUser(accessToken).then(res => {
-			setOrder(res.content)
-		})
-	}, [accessToken])
+  useEffect(() => {
+    getOderByUser(accessToken).then(res => {
+      setOrder(res.content);
+    });
+  }, [accessToken]);
 
-	const onClickOrder = (value, index) => {
-		setOpenDetail(index);
-		setGetDetail(value);
-		// console.log(getDetail)
-		if (openDetail === index) {
-			setGetDetail();
-			setOpenDetail();
-		}
-	}
+  const onClickOrder = (value, index) => {
+    if (openDetail === index) {
+      setGetDetail(null);
+      setOpenDetail(null);
+    } else {
+      setGetDetail(value);
+      setOpenDetail(index);
+    }
+  };
 
-	return (
-		<div className='my-booking'>
-			<div className='booking-items'>
-				{
-					order.map((detail, index) => (
-						<div key={index} className='item'>
-							<div className='place'>
-								<div className='departure'>
-									{detail.ticket.addressStart}
-								</div>
-								<div className='arrow'>
-									<FontAwesomeIcon icon={faArrowRightLong} style={{ fontSize: "1.5em", color: "#165F81" }} />
-								</div>
-								<div className='destination'>
-									{detail.ticket.addressEnd}
-								</div>
-							</div>
-							<Divider style={{ padding: "0px 10px" }} />
-							<div className='time-state-car'>
-								<div className='time'>
-									{detail.order.trip.timeStart}
-								</div>
-								<div class="flex justify-center items-center" >
-									<div class="arrow">
-										{detail.status === true ?
-											<div style={{ background: "green" }} className='state'>
-												On Going
-											</div>
-
-											:
-											<div style={{ background: "red" }} className='state'>
-												Cancel
-											</div>
-										}
-									</div>
-								</div>
-								<div className='price'>
-									{Intl.NumberFormat().format(detail.ticket.price)}đ
-
-								</div>
-							</div>
-							<div className='open-detail'>
-								{openDetail === index ?
-									<button onClick={() => onClickOrder(detail, index)}
-										style={{ backgroundColor: "#2187b6", padding: "5px 10px", borderRadius: "10px" }}>Close</button>
-									:
-									<button onClick={() => onClickOrder(detail, index)}
-										style={{ backgroundColor: "#2187b6", padding: "5px 10px", borderRadius: "10px" }}>Detail</button>
-								}
-								{
-									openDetail === index
-										? <BookingDetails bookingDetail={getDetail} />
-										: null
-								}
-							</div>
-						</div>
-					))
-				}
-			</div>
-		</div>
-	);
+  return (
+    <div className='my-booking'>
+      <div className='booking-items'>
+        {order.map((detail, index) => (
+          <div key={index} className='item'>
+            <div className='place'>
+              <div className='departure'>{detail.trip.provinceStart}</div>
+              <div className='arrow'>
+                <FontAwesomeIcon icon={faArrowRightLong} style={{ fontSize: '1.5em', color: '#165F81' }} />
+              </div>
+              <div className='destination'>{detail.trip.provinceEnd}</div>
+            </div>
+            <Divider style={{ padding: '0px 10px' }} />
+            <div className='time-state-car'>
+              <div className='time'>{detail.trip.timeStart}</div>
+              <div className='flex justify-center items-center'>
+                <div className='arrow'>
+                  <div style={{ background: detail.details[0].status ? 'green' : 'red' }} className='state'>
+                    {detail.details[0].status ? 'On Going' : 'Cancel'}
+                  </div>
+                </div>
+              </div>
+              <div className='price'>
+                {new Intl.NumberFormat().format(detail.sumOrder)}đ
+              </div>
+            </div>
+            <div className='open-detail'>
+              <button
+                onClick={() => onClickOrder(detail, index)}
+                style={{ backgroundColor: '#2187b6', padding: '5px 10px', borderRadius: '10px' }}
+              >
+                {openDetail === index ? 'Close' : 'Detail'}
+              </button>
+              {openDetail === index && <BookingDetails bookingDetail={getDetail} />}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default Mybooking;
