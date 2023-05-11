@@ -17,10 +17,10 @@ async function login(username, password) {
 		}
 	}
 }
-async function register(username, password, fullname, phoneNumber, email, address) {
+async function register(password, fullname, phoneNumber, email, address) {
 	try {
 		const { data } = await axios.post(`${BASE_URL}/api/v1/auth/signUpUserVerifyEmail`, {
-			username: username, password: password,
+			username: email, password: password,
 			user: {
 				fullName: fullname,
 				phoneNumber: phoneNumber,

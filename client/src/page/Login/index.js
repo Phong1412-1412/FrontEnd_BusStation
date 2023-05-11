@@ -43,19 +43,18 @@ function Login() {
 				<Form.Item
 					rules={[{
 						required: true,
-						message: 'Enter Username'
-					},
-					{
-						min: 3,
-						message: 'Username must be at least 3 characters'
+						message: 'Enter your email'
 					},
 					{
 						max: 50,
-						message: 'Username cannot be longer than 50 characters'
+						message: 'Email cannot be longer than 50 characters'
+					},
+					{
+						type: 'email', message: 'Please enter a valid email'
 					},
 					]}
 					name={'username'}>
-					<Input className='input' prefix={<UserOutlined className="site-form-item-icon" />} placeholder='Enter Username' maxLength={50} />
+					<Input className='input' prefix={<UserOutlined className="site-form-item-icon" />} placeholder='Enter email' maxLength={50} />
 				</Form.Item>
 
 				<Form.Item

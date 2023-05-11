@@ -15,7 +15,7 @@ function Register(props) {
 	const handleSubmit = async (value) => {
 		setIsLoading(true);
 		try {
-		  const result = await register(value.username, value.password, value.fullname, value.phoneNumber, value.email, value.address);
+		  const result = await register(value.password, value.fullname, value.phoneNumber, value.email, value.address);
 		  if (!result) {
 			throw new Error("Register fail!");
 		  }
@@ -46,14 +46,7 @@ function Register(props) {
 
 		return Promise.resolve();
 	}
-	const validateUserName = (_, value) => {
-		const trimmedValue = value.trim();
-		const words = trimmedValue.split(' ');
-		if (words.length > 1 || /\s\s/.test(value)) {
-			return Promise.reject(new Error('UserName have no spaces'));
-		}
-		return Promise.resolve();
-	}
+
 	const validateAddress = (_, value) => {
 		const trimmedValue = value.trim();
 		const words = trimmedValue.split(' ');
@@ -106,27 +99,6 @@ function Register(props) {
 					name={'fullname'}
 					hasFeedback>
 					<Input className='input' prefix={<UserOutlined />} placeholder='Enter FullName' />
-				</Form.Item>
-				<Form.Item
-					rules={[{
-						required: true,
-						message: 'Please input your username!'
-					},
-					{
-						min: 3,
-						message: 'Username must be at least 3 characters'
-					},
-					{
-						validator: validateUserName
-					},
-					{
-						max: 50,
-						message: 'Username cannot be longer than 50 characters'
-					},
-					]}
-					name={'username'}
-					hasFeedback>
-					<Input className='input' prefix={<UserOutlined />} placeholder='Enter Username' />
 				</Form.Item>
 				<Form.Item
 					rules={[{
