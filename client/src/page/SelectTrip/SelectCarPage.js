@@ -189,6 +189,7 @@ export default function SelectCarPage() {
                                             onChange={(e) => {
                                                 const selectedCarType = Number(e.target.value);
                                                 setTypeCar(isNaN(selectedCarType) ? 0 : selectedCarType);
+                                                setSelectedCar(null);   
                                              }}>
                                             <option value=''>All</option>
                                             {selectedCarType?.map((carType, id) => (
