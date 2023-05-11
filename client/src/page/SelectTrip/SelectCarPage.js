@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import SelectSeat from './SelectSeat';
 import CommentPage from '../CommentPage/index'
 import './css/SelectCarPage.css'
@@ -14,6 +14,7 @@ export default function SelectCarPage() {
     const [selectedTripId, setSelectedTripId] = useState(null);
     const [selectedCarType, setSelectedCarType] = useState([]);
     const [carType, setTypeCar] = useState(0);
+    const overlayRef = useRef(null);
     useEffect(() => {
         (async () => {
             const typeCarDT = await getAllTypeCar()
@@ -26,7 +27,24 @@ export default function SelectCarPage() {
         setIsOpen(true);
         setSelectedTripId(tripId);
     };
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+          if (
+            overlayRef.current &&
+            !overlayRef.current.contains(event.target)
+          ) {
+            setIsOpen(false);
+          }
+        }
     
+        document.addEventListener("mousedown", handleClickOutside);
+    
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [overlayRef]);
+
     const location = useLocation();
 
     const refetch = async () => {
@@ -149,11 +167,11 @@ export default function SelectCarPage() {
                                                 <p>|</p>
                                             </div>
                                             <div>
-                                                <button onClick={() => openNewPage(trip.tripId)}>Comment</button>
+                                                <button className='comment-button' onClick={() => openNewPage(trip.tripId)}>Comment</button>
                                                 {   
                                                     isOpen && (
                                                     <div class="overlay">
-                                                        <div className='comments-page'>
+                                                        <div className='comments-page' ref={overlayRef}>
                                                         <button onClick={() => {        
                                                             setIsOpen(false);
                                                             setSelectedTripId(null);

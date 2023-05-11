@@ -19,6 +19,17 @@ function CommentPage(props) {
   const { accessToken, user } = useAuth()
   const navigate = useNavigate()
 
+  const chatRef = useRef(null);
+  const [chatScroll, setChatScroll] = useState(0);
+
+  // Lắng nghe sự kiện scroll
+  const handleScroll = () => {
+    const chatNode = chatRef.current;
+    if (chatNode.scrollTop + chatNode.offsetHeight >= chatNode.scrollHeight) {
+      setChatScroll(chatNode.scrollTop);
+    }
+  };
+
   useEffect(() => {
     const socket = new SockJS(`${BASE_URL}/comments`);
     const stompClient = Stomp.over(socket);
@@ -102,6 +113,9 @@ function CommentPage(props) {
     setContent('');
     setParentId(null);
     setReplyContent('');
+    const chatNode = chatRef.current;
+    chatNode.scrollTo({ top: 0 });
+    setChatScroll(chatNode.scrollTop);
   };
 
   //rely comment
@@ -137,14 +151,14 @@ function CommentPage(props) {
     navigator.clipboard.writeText(content);
     setShowOptions(!showOptions);
   };
-
+    
   return (
-      <div>
+      <div className='wrapper'>
           <div className="chat-header">
               <h1>{title}</h1>
           </div>
 
-          <div className="chat-messages">
+          <div className="chat-messages" ref={chatRef} onScroll={handleScroll}>
               {comments?.content?.map((comment) => {
                 const userRole = comment.user?.roleId;
                 const nameColor = userRole === 'ADMIN' ? 'red' : userRole === 'DRIVER' ? 'blue' : 'black';
