@@ -81,7 +81,7 @@ function Mybooking() {
               <div className='flex justify-center items-center'>
                 <div className='arrow'>
                   <div style={{ background: detail.details[0].status ? 'green' : 'red' }} className='state'>
-                    {detail.details[0].status ? 'On Going' : 'Cancel'}
+                    {detail.tripStatus}
                   </div>
                 </div>
               </div>
@@ -98,7 +98,7 @@ function Mybooking() {
                   >
                     {openDetail === index ? 'Close' : 'Detail'}
                   </button>
-                  <button onClick={() => deleteOrder(detail.orderId)} style={{ backgroundColor: '#b62121', padding: '5px 10px', borderRadius: '10px' }}>Cancel</button>
+                  <button onClick={() => deleteOrder(detail.orderId)} style={{ backgroundColor: '#b62121', padding: '5px 10px', borderRadius: '10px', display: 'none' }}>Cancel</button>
               </div>
               {openDetail === index && <BookingDetails bookingDetail={getDetail} />}
             </div>

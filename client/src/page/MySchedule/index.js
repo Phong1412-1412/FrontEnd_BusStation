@@ -4,11 +4,15 @@ import './style.css'
 import { Popover } from 'antd';
 import { getSchedule } from '../../services/schedule';
 import { getCurrentDate } from '../../utils/dateTime';
+import { BASE_URL } from '../../constant/network';
 
 export default function MySchedulePage() {
     const [schedule, setSchedule] = useState([]);
     const [year, setYear] = useState(new Date().getFullYear());
     const [month, setMonth] = useState(new Date().getMonth());
+    const [orderRequest, setOrderRequest] = useState({
+        tripId: ""
+    })
 
     const { accessToken } = useAuth();
     //Get current day
@@ -66,6 +70,57 @@ export default function MySchedulePage() {
         return new Date(year, month, 1).getDay();
     };
 
+    async function handleClickOnGoing(orderRequest) {
+        try {
+            const confirmed = window.confirm("Are you sure you want to update this trip?");
+          if (!confirmed) {
+            return;
+          }
+            const request = await fetch(`${BASE_URL}/api/v1/trips/update/ongoing`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            },  
+            body: JSON.stringify({
+                tripId : orderRequest.tripId
+            }),
+          });
+
+          if (!request.ok) {
+            throw new Error('Something went wrong!');
+          }
+          } catch (error) {
+            console.error(error);
+          }
+    }
+
+   async function handleClickComplete(orderRequest) {
+        try {
+            const confirmed = window.confirm("Are you sure you want to update this trip?");
+          if (!confirmed) {
+            return;
+          }
+            const request = await fetch(`${BASE_URL}/api/v1/trips/update/complete`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`
+            },  
+            body: JSON.stringify({
+                tripId : orderRequest.tripId
+            }),
+          });
+
+          if (!request.ok) {
+            throw new Error('Something went wrong!');
+          }
+          } catch (error) {
+            console.error(error);
+          }
+    }
     //render day month and event in day
     const renderCalendar = () => {
         const days = [];
@@ -114,8 +169,22 @@ export default function MySchedulePage() {
                                             : <p className='text-blue-400 font-bold'>{event.timeStart.substring(11, 16)}</p>
                                         }
                                         <p className='text-blue-500 '>{event.provinceStart}</p>
-                                        <p>to</p>
+                                        <p>to</p>   
                                         <p className='text-blue-500 '>{event.provinceEnd}</p>
+                                        <div className='btn-orderStatus'>
+                                            <button onClick={() => {
+                                                setOrderRequest({
+                                                    tripId: event.tripId
+                                                })
+                                                handleClickOnGoing(orderRequest)
+                                            }}>ONGOING</button>
+                                            <button onClick={() => {
+                                                setOrderRequest({
+                                                    tripId: event.tripId
+                                                })
+                                                handleClickComplete(orderRequest)
+                                            }}>COMPLETE</button>
+                                        </div>
                                     </div>
                                     :
                                     <Popover key={event.tripId}
