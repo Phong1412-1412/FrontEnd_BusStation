@@ -289,7 +289,7 @@ export default function SelectSeat({ trip, car }) {
     
             localStorage.removeItem("order_" + order.orderId);
             message.success("Create order successfully !")
-            navigate("/my-booking")
+            navigate("/verify-details",{ state: { orderId: order.orderId } })
         } catch (error) {
             alert("Booking failed");
         }
