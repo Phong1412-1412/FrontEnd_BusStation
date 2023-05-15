@@ -127,7 +127,7 @@ function ModalForm(props) {
 							type: 'email', message: 'Please enter a valid email'
 						},
 						]} hasFeedback>
-						<Input prefix={<MailFilled />} />
+						<Input prefix={<MailFilled />} disabled />
 					</Form.Item>
 					<Form.Item label="Address" name='address'
 						rules={[{
