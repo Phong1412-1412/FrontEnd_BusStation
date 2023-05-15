@@ -9,19 +9,68 @@ import { message } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { WS_URL } from '../../constant/network';
 import Loading from '../../components/Loading/loading';
+import { getAllPayments } from '../../services/payment';
+import { countChair, cancellationCount } from '../../services/countChairs';
 
 export default function SelectSeat({ trip, car }) {
     const [order, setOrder] = useState(null)
     const [selectedSeats, setSelectedSeats] = useState([])
     const [disabledSeats, setDisabledSeats] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+    const [countOrderDetails, setCountOrderDetails] = useState(0)
+    const [cancelCount, setCancelCount] = useState(0)
 
     const [seats, setSeats] = useState(car.chair)
 
     const [stompClient, setStompClient] = useState(null);
     const { accessToken, user } = useAuth()
 
+    const [selectPayment, setSelectPayment] = useState([]);
+    const [payment , setPayment] = useState(0);
+
+    useEffect(() => {
+        (async() => {
+            const data = await getAllPayments();
+            setSelectPayment(data);
+            if(data.length > 0) {
+                const lastIndex = data.length -1;
+                setPayment(data[lastIndex])
+                console.log(payment.id);
+            }
+        })()
+    },[])
+
+
+    useEffect(() => {
+        if(order && order.orderId != null) {
+            async function getCount() {
+            try {
+                const result = await countChair(order.orderId);
+                setCountOrderDetails(result);
+            } catch (error) {
+                console.log(error);
+            }
+            }
+            getCount();
+        }
+      }, [order]);
+    
+      useEffect(() => {
+        if(order && order.orderId != null) {
+            async function getCount() {
+            try {
+                const result = await cancellationCount(order.orderId);
+                setCancelCount(result);
+            } catch (error) {
+                console.log(error);
+            }
+            }
+            getCount();
+        }
+      }, [order]);
+
     const navigate = useNavigate()
+
 
     useEffect(() => {
         const socket = new SockJS(WS_URL);
@@ -191,7 +240,8 @@ export default function SelectSeat({ trip, car }) {
                 tripId: trip.tripId,
                 chairId: chair.chairId,
                 addressStart: trip.provinceStart,
-                addressEnd: trip.provinceEnd
+                addressEnd: trip.provinceEnd,
+                paymentId: payment.id
             }
 
             setOrder({
@@ -214,8 +264,23 @@ export default function SelectSeat({ trip, car }) {
                 message.error("Please pick a car before submit order !")
                 return;
             }
-    
-            const data = await submitOrder({ orderId: order.orderId, tripId: trip.tripId })
+
+            if(!payment.id) {     
+                message.error("payment id is null !")
+                return;
+            }
+
+            if(countOrderDetails > 3 && payment.id !== 2) {
+                message.error("If you book more than 3 seats, please change the payment method to bank transfer.!")
+                return;
+            }
+
+            if(cancelCount > 3 && payment.id !== 2) {
+                message.error("You have canceled the trip more than 3 times, please change the payment method to transfer payment to continue.")
+                return;
+            }
+
+            const data = await submitOrder({ orderId: order.orderId, tripId: trip.tripId, paymentId: payment.id})
     
             if (!data) {
                 message.error("Oops! Something went wrong @@")
@@ -286,7 +351,7 @@ export default function SelectSeat({ trip, car }) {
             </div>
             {stompClient
                 ? (
-                    <div class="seat-map">
+                    <div className="seat-map">
                         <div className='seat-map__desk-title'>
                             <p>Upper Desk</p>
                             <p>Lower Desk</p>
@@ -376,9 +441,29 @@ export default function SelectSeat({ trip, car }) {
                 )
                 : <div style={{ height: 300, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Loading /></div>
             }
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className='orderDetail'>
                 <div>
                     <p >Seats: {seats.length}</p>
+                </div>
+            <h1 className='payment-title'>Order Detail</h1>
+                <div className='payment-box'>
+                <div className='payment-count'> 
+                    <p>Chair: {countOrderDetails}</p>
+                    <h1>Total Price: 1000000đ</h1>
+                </div>
+                <div className='submin-order'>
+                <div className='select-car-type'>
+                                        <label htmlFor='payment-method'>Select payment method:</label>
+                                        <select id='payment-method' value={payment? payment.id : ''} 
+                                            onChange={(e) => {
+                                                const selected = selectPayment.find(p => p.id === Number(e.target.value));
+                                                setPayment(selected)
+                                             }}>
+                                            {selectPayment?.map((payment, id) => (
+                                            <option key={id} value={payment.id}>{payment.paymentMethod}</option>
+                                            ))}
+
+                                        </select>
                 </div>
                 <div>
                     {!isLoading && ( <button className="btn-choose" onClick={() => onSubmitOrder()}>Continue</button>)}
@@ -386,6 +471,8 @@ export default function SelectSeat({ trip, car }) {
                     {isLoading && ( <button className="btn-choose">Loading...</button>)}
                 </div>
             </div>
+            </div>
         </div>
+    </div>
     )
 } 

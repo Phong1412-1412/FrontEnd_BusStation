@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Divider } from 'antd';
+import { Divider, message } from 'antd';
 import './style.css';
 import { faArrowRightLong } from '@fortawesome/free-solid-svg-icons';
 import { useAuth } from '../../contexts/auth';
@@ -60,8 +60,11 @@ function Mybooking() {
  }
 
  function deleteOrder(orderId) {
-    console.log(orderId);
-    handleDeleteOrder(orderId);
+  if(!order || order.tripStatus !== "PREPARE") {
+    message.error("You can only cancel the order when the status is preparing")
+    return;
+  }
+  handleDeleteOrder(orderId);
  }
   return (
     <div className='my-booking'>
@@ -98,7 +101,8 @@ function Mybooking() {
                   >
                     {openDetail === index ? 'Close' : 'Detail'}
                   </button>
-                  <button onClick={() => deleteOrder(detail.orderId)} style={{ backgroundColor: '#b62121', padding: '5px 10px', borderRadius: '10px', display: 'none' }}>Cancel</button>
+
+                  <button onClick={() => deleteOrder(detail.orderId)} style={{ backgroundColor: '#b62121', padding: '5px 10px', borderRadius: '10px', }}>Cancel</button>
               </div>
               {openDetail === index && <BookingDetails bookingDetail={getDetail} />}
             </div>
