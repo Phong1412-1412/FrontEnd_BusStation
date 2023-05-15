@@ -6,7 +6,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-
 function Login() {
 	
 	const [form] = Form.useForm();
@@ -20,9 +19,6 @@ function Login() {
 			navigate('/')
 		}
 	}, [user])
-	const handleGoogleLogin = () => {
-		window.location = 'http://localhost:9999/oauth2/authorization/google';
-	}
 
 	const handleSubmit = async (value) => {
 		setIsLoading(true);
@@ -99,9 +95,6 @@ function Login() {
 					<Link style={{ fontWeight: '700' }} to='/register'>Register</Link>
 				</div>
 			</Form>
-				<div>
-					<button onClick={handleGoogleLogin}>Login with Google</button>
-				</div>
 		</div>
 	);
 }
