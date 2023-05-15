@@ -59,12 +59,13 @@ function Mybooking() {
     }
  }
 
- function deleteOrder(orderId) {
+ function deleteOrder(order) {
   if(!order || order.tripStatus !== "PREPARE") {
+    console.log(order.tripStatus);
     message.error("You can only cancel the order when the status is preparing")
     return;
   }
-  handleDeleteOrder(orderId);
+  handleDeleteOrder(order.orderId);
  }
   return (
     <div className='my-booking'>
@@ -83,7 +84,7 @@ function Mybooking() {
               <div className='time'>{detail.trip.timeStart}</div>
               <div className='flex justify-center items-center'>
                 <div className='arrow'>
-                  <div style={{ background: detail.details[0].status ? 'green' : 'red' }} className='state'>
+                  <div style={{ background: detail.details[0].tripStatus ? 'green' : 'green' }} className='state'>
                     {detail.tripStatus}
                   </div>
                 </div>
@@ -102,7 +103,7 @@ function Mybooking() {
                     {openDetail === index ? 'Close' : 'Detail'}
                   </button>
 
-                  <button onClick={() => deleteOrder(detail.orderId)} style={{ backgroundColor: '#b62121', padding: '5px 10px', borderRadius: '10px', }}>Cancel</button>
+                  <button onClick={() => deleteOrder(detail)} style={{ backgroundColor: '#b62121', padding: '5px 10px', borderRadius: '10px', }}>Cancel</button>
               </div>
               {openDetail === index && <BookingDetails bookingDetail={getDetail} />}
             </div>
