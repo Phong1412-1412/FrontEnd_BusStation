@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/FrontEnd_BusStation/static/css/main.e5091e2f.css",
+    "main.js": "/FrontEnd_BusStation/static/js/main.9b5e0bb9.js",
+    "static/js/787.c4e7f8f9.chunk.js": "/FrontEnd_BusStation/static/js/787.c4e7f8f9.chunk.js",
+    "static/media/logo.png": "/FrontEnd_BusStation/static/media/logo.79c15ab3746e0036bd28.png",
+    "index.html": "/FrontEnd_BusStation/index.html",
+    "main.e5091e2f.css.map": "/FrontEnd_BusStation/static/css/main.e5091e2f.css.map",
+    "main.9b5e0bb9.js.map": "/FrontEnd_BusStation/static/js/main.9b5e0bb9.js.map",
+    "787.c4e7f8f9.chunk.js.map": "/FrontEnd_BusStation/static/js/787.c4e7f8f9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e5091e2f.css",
+    "static/js/main.9b5e0bb9.js"
+  ]
+}
