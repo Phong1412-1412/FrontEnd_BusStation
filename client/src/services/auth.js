@@ -17,6 +17,22 @@ async function login(username, password) {
 		}
 	}
 }
+async function loginWithGoogle(response){
+	try {
+	  const { data, error } = await axios.post('http://localhost:9999/api/v1/oauth2/google-login', {
+		email: response.profileObj.email,
+		fullname: response.profileObj.name
+	  });
+	  if (!data || error) throw new Error();
+	  return {
+		access_token: data.accessToken,
+		refresh_token: data.refreshToken
+	  }
+	} catch (error) {
+	  return { access_token: null };
+	}
+}
+
 async function register(password, fullname, phoneNumber, email, address) {
 	try {
 		const { data } = await axios.post(`${BASE_URL}/api/v1/auth/signUpUserVerifyEmail`, {
@@ -36,7 +52,10 @@ async function register(password, fullname, phoneNumber, email, address) {
 	}
 }
 
+
+
 export {
 	login, 
-	register
+	register,
+	loginWithGoogle
 }
