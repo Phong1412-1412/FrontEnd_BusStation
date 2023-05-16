@@ -1,8 +1,8 @@
-import React, {useState ,useEffect } from 'react';
+import React, {useState} from 'react';
 import './style.css';
 import { Form, Input, Typography } from 'antd';
 import { LockFilled, UserOutlined } from '@ant-design/icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import { useAuth } from '../../contexts/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
@@ -10,15 +10,7 @@ function Login() {
 	
 	const [form] = Form.useForm();
 	const [isLoading, setIsLoading] = useState(false);
-
-	const { signIn, user } = useAuth()
-	const navigate = useNavigate()
-
-	useEffect(() => {
-		if(user) {
-			navigate('/')
-		}
-	}, [user])
+	const { signIn } = useAuth()
 
 	const handleSubmit = async (value) => {
 		setIsLoading(true);
@@ -77,7 +69,7 @@ function Login() {
 				<Form.Item className='form-item-login'>
 					<div className='wrap-btn'>
 						{!isLoading && (
-							<button className='btn-login' htmlType='submit'>LOGIN </button>
+							<button className='btn-login' htmltype='submit'>LOGIN </button>
 						)}
 						{isLoading && (
 							<button className='btn-login'>Loading...</button>

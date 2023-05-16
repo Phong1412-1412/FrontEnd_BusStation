@@ -1,24 +1,26 @@
+import React, {useState} from 'react';
 import { Form, Input, Typography, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { BASE_URL } from '../../constant/network';
 
-const BASE_URL = 'http://localhost:9999'; // Thay đổi BASE_URL bằng URL của server API
 
 function ForgotPassword() {
+  const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
 
   const handleSubmit = async (value) => {
+    setIsLoading(true);
     try {
       const response = await forgotPassword(value.email);
-      // Xử lý kết quả trả về từ API tại đây
-      console.log(response); // ví dụ: hiển thị thông báo cho người dùng
+      console.log(response);
       message.success('Reset password email has been sent to your inbox');
     } catch (error) {
       console.error(error);
-      // handle error from server
       message.error('Failed to reset password. Please check your email and try again.');
-    }
+    }finally {
+			setTimeout(() => {setIsLoading(false);},1000)
+		}
   };
 
   async function forgotPassword(email) {
@@ -61,18 +63,15 @@ function ForgotPassword() {
 
         <Form.Item className='form-item-login'>
           <div className='wrap-btn'>
-            <button className='btn-login' htmlType='submit'>
-              SUBMIT
-            </button>
+            {!isLoading && (
+                <button className='btn-login' htmltype='submit'>SUBMIT </button>
+            )}
+						{isLoading && (
+							<button className='btn-login'>Loading...</button>
+						)}
           </div>
         </Form.Item>
       </Form>
-
-      <div className='to-login'>
-        <Link style={{ fontWeight: '700' }} to='/login'>
-          Back to Login
-        </Link>
-      </div>
     </div>
   );
 }
