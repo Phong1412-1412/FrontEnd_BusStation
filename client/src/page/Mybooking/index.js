@@ -32,6 +32,7 @@ function Mybooking() {
 
 
   const handleDeleteOrder = async (orderId) => {
+    console.log(orderId);
     try {
       const confirmed = window.confirm("Are you sure you want to cancel this order?");
     if (!confirmed) {
@@ -59,12 +60,12 @@ function Mybooking() {
     }
  }
 
- function deleteOrder(orderId) {
+ function deleteOrder(order) {
   if(!order || order.tripStatus !== "PREPARE") {
     message.error("You can only cancel the order when the status is preparing")
     return;
   }
-  handleDeleteOrder(orderId);
+  handleDeleteOrder(order.orderId);
  }
   return (
     <div className='my-booking'>
@@ -102,7 +103,7 @@ function Mybooking() {
                     {openDetail === index ? 'Close' : 'Detail'}
                   </button>
 
-                  <button onClick={() => deleteOrder(detail.orderId)} style={{ backgroundColor: '#b62121', padding: '5px 10px', borderRadius: '10px', }}>Cancel</button>
+                  <button onClick={() => deleteOrder(detail)} style={{ backgroundColor: '#b62121', padding: '5px 10px', borderRadius: '10px', }}>Cancel</button>
               </div>
               {openDetail === index && <BookingDetails bookingDetail={getDetail} />}
             </div>

@@ -31,7 +31,7 @@ export default function AuthProvider({ children }) {
 		axios.defaults.headers.common.Authorization = `Bearer ${access_token}`
 		setAccessToken(access_token)
 		Cookies.set('access_token', access_token)
-		navigate("/")
+		navigate(-1)
 	}
 
 	const signOut = async () => {

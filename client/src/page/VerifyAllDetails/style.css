@@ -54,3 +54,40 @@ table .details-des {
 		padding: 30px;
 	}
 }
+
+.edit-input {
+	border: 1px solid lightgray;
+	border-radius: 4px;
+	padding: 5px;
+	width: 200px;
+  }
+  
+  .edit-input:focus {
+	outline: none;
+	border-color: blue;
+  }
+  .title-mobile {
+	font-size: 24px;
+	font-weight: bold;
+	text-align: center;
+	display: none; /* Ẩn tiêu đề trên chế độ desktop */
+  }
+  
+  .title-desktop {
+	font-size: 32px;
+	font-weight: bold;
+	text-align: center;
+	display: block; /* Hiển thị tiêu đề trên chế độ desktop */
+  }
+  
+  /* Media query để áp dụng kiểu chữ cho chế độ điện thoại */
+  @media only screen and (max-width: 600px) {
+	.title-mobile {
+	  display: block; /* Hiển thị tiêu đề trên chế độ điện thoại */
+	}
+	
+	.title-desktop {
+	  display: none; /* Ẩn tiêu đề trên chế độ desktop */
+	}
+  }
+  
