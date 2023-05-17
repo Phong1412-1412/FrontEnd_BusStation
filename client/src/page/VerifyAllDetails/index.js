@@ -4,11 +4,10 @@ import { Typography } from "antd";
 import { useLocation } from 'react-router-dom';
 import { getOderByUserIdandOrderId } from '../../services/mybooking';
 import { useAuth } from '../../contexts/auth';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { BASE_URL } from '../../constant/network';
 import { useNavigate } from 'react-router-dom';
 import { editProfile } from '../../services/account';
+import { message } from 'antd';
 
 function VerifyAllDetails() {
 
@@ -18,15 +17,15 @@ function VerifyAllDetails() {
 	const { accessToken } = useAuth();
 	const [order, setOrder] = useState([]);
 	const [isEditing, setIsEditing] = useState(false);
-	const [isDelete, setIsDelete] = useState(true);
 	const [fullName, setFullName] = useState('');
   	const [phoneNumber, setPhoneNumber] = useState('');
+	const [sendEmail, setSendEmail] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleDeleteOrder = async (orderId) => {
 		try {
 		const confirmed = window.confirm("Are you sure you want to cancel this order?");
 		if (!confirmed) {
-		  setIsDelete(false);
 		  return;
 		}	
 		const request = await fetch(`${BASE_URL}/api/v1/orders/cancellingInvoice/${orderId}`,
@@ -44,23 +43,51 @@ function VerifyAllDetails() {
 		setOrder([]);
 		if (!request.ok) {
 		  throw new Error('Something went wrong!');
+		}else{
+			navigate(-1);
 		}
 		} catch (error) {
 		  console.error(error);
 		}
 	}
 
-	function deleteOrder(orderId) {
-		handleDeleteOrder(orderId);
-		if(!isDelete){
-			setIsDelete(true);
-			navigate(-1);
+	const sendEmailRequest = async (orderId) => {
+		setIsLoading(true);
+		try {
+		  const response = await fetch(`${BASE_URL}/api/v1/orders/sendMail`, {
+			method: 'POST',
+			headers: {
+			  'Content-Type': 'application/json',
+			  'Authorization': `Bearer ${accessToken}`
+			},
+			body: JSON.stringify({ orderId }),
+		  });
+	  
+		  if (!response.ok) {
+			throw new Error('Failed to send email.');
+		  }
+		  message.success('Verify Order successfully. Check your email for order details.');
+		  navigate("/my-booking");
+		} catch (error) {
+		  console.error(error);
+		  message.error('Failed to send email. Please try again later.');
+		}finally {
+			setTimeout(() => {setIsLoading(false);},2000)
 		}
-				
+	};
+
+	function deleteOrder(orderId) {
+		handleDeleteOrder(orderId);				
 	}
 
-	function verifyOrder() {
-		navigate("/my-booking");
+	function verifyOrder(orderId) {		
+		if (sendEmail) {			
+			sendEmailRequest(orderId);
+		}else{
+			message.success('Verify Order successfully.Check your order details here');
+			navigate("/my-booking");
+		}
+		
 	}
 
 	const getChairNumbers = () => {
@@ -100,8 +127,10 @@ function VerifyAllDetails() {
 	const handleSaveClick = () => {
 		// Gọi hàm editProfile để cập nhật thông tin khách hàng
 		editProfile(order.user.userId, fullName, phoneNumber, order.user.email, order.user.address);
-	
 		setIsEditing(false);
+	};
+	const handleSendEmailChange = () => {
+		setSendEmail(!sendEmail);
 	};
   
   	// JSX code cho giao diện và nội dung trang
@@ -190,6 +219,20 @@ function VerifyAllDetails() {
 						{order.user?.email}
 						</td>
 					</tr>
+					<tr>
+					<td className="details-title">Send Email:</td>
+					<td className="details-des">
+						{isEditing ? (
+						<input
+							type="checkbox"
+							checked={sendEmail}
+							onChange={handleSendEmailChange}
+						/>
+						) : (
+						sendEmail ? 'Yes' : 'No'
+						)}
+					</td>
+					</tr>
 					{/* Các thông tin khác của khách hàng */}
 					</thead>
 				</table>
@@ -218,8 +261,12 @@ function VerifyAllDetails() {
 			<div className="btn-back-continue">
 					<button onClick={() => deleteOrder(order.orderId)} >Cancel</button>
 					<div className='btn-continue'>
-						<button onClick={()=>verifyOrder()}>View your booking</button>
-						<i className="arrow-icon"><FontAwesomeIcon icon={faArrowRight} /></i>
+						{!isLoading && (
+							<button onClick={()=>verifyOrder(order.orderId)}>View your booking</button>							
+						)}
+						{isLoading && (
+							<button>Loading...</button>
+						)}											
 					</div>
 			</div>
 		</div>

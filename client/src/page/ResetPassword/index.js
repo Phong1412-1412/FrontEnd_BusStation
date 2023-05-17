@@ -15,22 +15,16 @@ function ResetPassword() {
   const handleSubmit = async (values) => {
     try {
       const response = await resetPassword(token, values.email, values.newPassword, values.verifyNewPassword);
-
-      // Xử lý kết quả trả về từ API tại đây
-
+      console.log("success", response);
       message.success('Your password has been reset successfully.');
-      navigate('/login'); // Chuyển hướng người dùng đến trang đăng nhập sau khi reset password thành công
+      navigate('/login'); 
     } catch (error) {
       console.error(error);
-
-      // Xử lý lỗi tại đây
-
       message.error('Failed to reset your password. Please try again later.');
     }
   };
 
   async function resetPassword(token, email, newPassword, verifyNewPassword) {
-    alert(token);
     try {
       const response = await axios.post(
         `${BASE_URL}/api/v1/auth/reset-password?token=${token}`,
@@ -39,7 +33,6 @@ function ResetPassword() {
       return response.data;
     } catch (error) {
       console.error(error);
-      // handle error from server
       throw error;
     }
   }
@@ -99,7 +92,7 @@ function ResetPassword() {
 
         <Form.Item className='form-item-login'>
           <div className='wrap-btn'>
-            <button className='btn-login' htmlType='submit'>
+            <button className='btn-login' htmltype='submit'>
              SUBMIT
             </button>
           </div>

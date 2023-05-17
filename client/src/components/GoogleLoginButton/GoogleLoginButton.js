@@ -27,10 +27,8 @@ const GoogleLoginButton = () => {
 		}
   };
   
-
   const onFailure = (response) => {
     console.log('FAILED', response);
-    alert('false');
   };
 
   return (

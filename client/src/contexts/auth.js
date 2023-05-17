@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie'
-import { login, register,loginWithGoogle } from "../services/auth";
+import { login,loginWithGoogle } from "../services/auth";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getUser } from "../services/account";
