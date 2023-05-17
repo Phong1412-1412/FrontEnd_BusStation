@@ -6,6 +6,7 @@ import { Link} from 'react-router-dom';
 import { useAuth } from '../../contexts/auth';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import GoogleLoginButton from '../../components/GoogleLoginButton/GoogleLoginButton';
 function Login() {
 	
 	const [form] = Form.useForm();
@@ -79,6 +80,8 @@ function Login() {
 						</i>
 						
 					</div>
+					<div><br/>or<br/></div>
+					<GoogleLoginButton />
 				</Form.Item>
 				<div className='to-register'>
 					<span style={{ fontWeight: '700' }}>
