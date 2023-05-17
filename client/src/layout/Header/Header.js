@@ -19,6 +19,16 @@ export default function Header() {
 		{
 			key: '2',
 			label: (
+				user ? (
+					<Link className='drop-item' rel="noopener noreferrer" to={"/my-booking"}>
+						<b><i>My Booking</i></b>
+					</Link>
+				) : null
+			),
+		},
+		{
+			key: '3',
+			label: (
 				user
 					? <div onClick={() => signOut()}><b><i>Logout</i></b></div>
 					: <Link to={"/login"} className='drop-item' rel="noopener noreferrer"><b><i>Login</i></b></Link>
@@ -85,9 +95,14 @@ export default function Header() {
 							(
 								user?.role.roleId === "DRIVER"
 									? (
+										<>
 										<li>
 											<Link to={"/driver/*"}><i>Driver: {user?.user.fullName}</i></Link>
 										</li>
+										<li>
+												<Link to={"/my-booking"}><i>My Booking</i></Link>
+										</li>
+										</>
 									)
 									: (
 										<>
