@@ -18,16 +18,18 @@ function VerifyAllDetails() {
 	const { accessToken } = useAuth();
 	const [order, setOrder] = useState([]);
 	const [isEditing, setIsEditing] = useState(false);
+	const [isDelete, setIsDelete] = useState(true);
 	const [fullName, setFullName] = useState('');
   	const [phoneNumber, setPhoneNumber] = useState('');
 
 	const handleDeleteOrder = async (orderId) => {
 		try {
-		  const confirmed = window.confirm("Are you sure you want to cancel this order?");
+		const confirmed = window.confirm("Are you sure you want to cancel this order?");
 		if (!confirmed) {
+		  setIsDelete(false);
 		  return;
-		}
-		  const request = await fetch(`${BASE_URL}/api/v1/orders/cancellingInvoice/${orderId}`,
+		}	
+		const request = await fetch(`${BASE_URL}/api/v1/orders/cancellingInvoice/${orderId}`,
 		{
 		  method: 'DELETE',
 		  headers: {
@@ -50,7 +52,11 @@ function VerifyAllDetails() {
 
 	function deleteOrder(orderId) {
 		handleDeleteOrder(orderId);
-		navigate(-1);
+		if(!isDelete){
+			setIsDelete(true);
+			navigate(-1);
+		}
+				
 	}
 
 	function verifyOrder() {

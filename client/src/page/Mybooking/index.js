@@ -15,6 +15,7 @@ function Mybooking() {
   const { accessToken } = useAuth();
 
   useEffect(() => {
+    console.log("Access token: "+ accessToken);
     getOderByUser(accessToken).then(res => {
       setOrder(res.content);
     });
