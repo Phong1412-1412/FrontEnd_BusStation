@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import Cookies from 'js-cookie'
-import { login, register } from "../services/auth";
+import { login, register,loginWithGoogle } from "../services/auth";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getUser } from "../services/account";
@@ -26,12 +26,24 @@ export default function AuthProvider({ children }) {
 			message.error("Login failed!")
 			return setUser(null)
 		}
-
 		message.success("Login successfully !")
 		axios.defaults.headers.common.Authorization = `Bearer ${access_token}`
 		setAccessToken(access_token)
 		Cookies.set('access_token', access_token)
 		navigate(-1)
+	}
+
+	const signInWithGoogle = async (response) => {
+		const { access_token} = await loginWithGoogle(response);
+		if (!access_token) {
+		  message.error("Login failed!")
+		  return setUser(null);
+		}
+		message.success("Login successfully !");
+		axios.defaults.headers.common.Authorization = `Bearer ${access_token}`
+		setAccessToken(access_token)
+		Cookies.set('access_token', access_token)		
+		navigate(-1);
 	}
 
 	const signOut = async () => {
@@ -91,6 +103,7 @@ export default function AuthProvider({ children }) {
 			accessToken,
 			user,
 			signIn,
+			signInWithGoogle,
 			signOut,
 			setUser
 		}}>
