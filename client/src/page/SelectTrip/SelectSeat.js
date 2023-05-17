@@ -447,10 +447,6 @@ export default function SelectSeat({ trip, car }) {
                 </div>
             <h1 className='payment-title'>Order Detail</h1>
                 <div className='payment-box'>
-                <div className='payment-count'> 
-                    <p>Chair: {countOrderDetails}</p>
-                    <h1>Total Price: 1000000đ</h1>
-                </div>
                 <div className='submin-order'>
                 <div className='select-car-type'>
                                         <label htmlFor='payment-method'>Select payment method:</label>
