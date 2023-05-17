@@ -18,14 +18,14 @@ function VerifyAllDetails() {
 	const [order, setOrder] = useState([]);
 	const [isEditing, setIsEditing] = useState(false);
 	const [fullName, setFullName] = useState('');
-  	const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 	const [sendEmail, setSendEmail] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
-
 	const handleDeleteOrder = async (orderId) => {
 		try {
 		const confirmed = window.confirm("Are you sure you want to cancel this order?");
 		if (!confirmed) {
+			
 		  return;
 		}	
 		const request = await fetch(`${BASE_URL}/api/v1/orders/cancellingInvoice/${orderId}`,
