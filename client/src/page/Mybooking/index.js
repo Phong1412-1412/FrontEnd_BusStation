@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Divider, message } from 'antd';
 import './style.css';
@@ -7,12 +7,36 @@ import { useAuth } from '../../contexts/auth';
 import { getOderByUser } from '../../services/mybooking';
 import BookingDetails from '../BookingDetails';
 import { BASE_URL } from '../../constant/network';
-
+import CommentPage from '../CommentPage';
 function Mybooking() {
   const [getDetail, setGetDetail] = useState(null);
   const [order, setOrder] = useState([]);
   const [openDetail, setOpenDetail] = useState(null);
   const { accessToken } = useAuth();
+  const [selectedTripId, setSelectedTripId] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const overlayRef = useRef(null);
+  function openNewPage(tripId) {
+    setIsOpen(true);
+    setSelectedTripId(tripId);
+};
+
+useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        overlayRef.current &&
+        !overlayRef.current.contains(event.target)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [overlayRef]);
 
   useEffect(() => {
     getOderByUser(accessToken).then(res => {
@@ -96,13 +120,28 @@ function Mybooking() {
             
             <div className='open-detail'>
               <div className='open-button'>
+                <div>
                   <button
                     onClick={() => onClickOrder(detail, index)}
-                    style={{ backgroundColor: '#2187b6', padding: '5px 10px', borderRadius: '10px' }}
+                    style={{ backgroundColor: '#2187b6', padding: '5px 10px', borderRadius: '10px', marginRight: '10px' }}
                   >
                     {openDetail === index ? 'Close' : 'Detail'}
                   </button>
-
+                  <button className='comment-button' onClick={() => openNewPage(detail.trip.tripId)}>Comment</button>
+                    {   
+                        isOpen && (
+                        <div class="overlay">
+                            <div className='comments-page' ref={overlayRef}>
+                            <button onClick={() => {        
+                                setIsOpen(false);
+                                setSelectedTripId(null);
+                            }} className='close'>&times;</button>
+                            <CommentPage data={selectedTripId} trip={detail.trip}/>
+                            </div>
+                        </div>
+                        )
+                    }
+                  </div>
                   <button onClick={() => deleteOrder(detail)} style={{ backgroundColor: '#b62121', padding: '5px 10px', borderRadius: '10px', }}>Cancel</button>
               </div>
               {openDetail === index && <BookingDetails bookingDetail={getDetail} />}
