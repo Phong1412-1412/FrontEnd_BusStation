@@ -56,7 +56,6 @@ useEffect(() => {
 
 
   const handleDeleteOrder = async (orderId) => {
-    console.log(orderId);
     try {
       const confirmed = window.confirm("Are you sure you want to cancel this order?");
     if (!confirmed) {
