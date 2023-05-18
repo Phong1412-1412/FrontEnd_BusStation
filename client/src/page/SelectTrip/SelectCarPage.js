@@ -170,7 +170,7 @@ export default function SelectCarPage() {
                                                 <button className='comment-button' onClick={() => openNewPage(trip.tripId)}>Comment</button>
                                                 {   
                                                     isOpen && (
-                                                    <div class="overlay">
+                                                    <div className="overlay">
                                                         <div className='comments-page' ref={overlayRef}>
                                                         <button onClick={() => {        
                                                             setIsOpen(false);

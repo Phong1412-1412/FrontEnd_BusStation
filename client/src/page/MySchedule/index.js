@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useAuth } from '../../contexts/auth'
 import './style.css'
 import { Popover } from 'antd';
 import { getSchedule } from '../../services/schedule';
 import { getCurrentDate } from '../../utils/dateTime';
 import { BASE_URL } from '../../constant/network';
+import UsersTripPage from '../UsersTripPage/index';
 
 export default function MySchedulePage() {
     const [schedule, setSchedule] = useState([]);
@@ -17,6 +18,28 @@ export default function MySchedulePage() {
     const { accessToken } = useAuth();
     //Get current day
     const currentDay = getCurrentDate();
+
+    const overlayRef = useRef(null)
+    const [isOpen, setIsOpen] = useState(false);
+    function openNewPage(tripId) {
+        setIsOpen(true)
+    };
+    useEffect(() => {
+        function handleClickOutside(event) {
+          if (
+            overlayRef.current &&
+            !overlayRef.current.contains(event.target)
+          ) {
+            setIsOpen(false);
+          }
+        }
+    
+        document.addEventListener("mousedown", handleClickOutside);
+    
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [overlayRef]);
 
     //Get schedule of driver
     useEffect(() => {
@@ -162,7 +185,7 @@ export default function MySchedulePage() {
                         {
                             events.map((event, index) => (
                                 events.length === 1 ?
-                                    <div key={event.tripId} style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <div key={event.tripId} style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'yellow' }}>
                                         {/* If time start < currentDay then this trip is finish */}
                                         {event.timeStart < currentDay ?
                                             <p className='text-green-500 font-bold'>Finish</p>
@@ -171,6 +194,17 @@ export default function MySchedulePage() {
                                         <p className='text-blue-500 '>{event.provinceStart}</p>
                                         <p>to</p>   
                                         <p className='text-blue-500 '>{event.provinceEnd}</p>
+                                        <div className='btn-listUser'>
+                                        <button onClick={() => openNewPage(event.tripId)}>OPEN LIST USER</button>
+                                        {
+                                            isOpen && (
+                                                <div className='overlay'> 
+                                                <div className='comments-page' ref={overlayRef}>
+                                                <UsersTripPage tripId={event.tripId}></UsersTripPage>
+                                                </div>
+                                                </div>
+                                            )
+                                        }
                                         <div className='btn-orderStatus'>
                                             <button onClick={() => {
                                                 setOrderRequest({
@@ -184,6 +218,7 @@ export default function MySchedulePage() {
                                                 })
                                                 handleClickComplete(orderRequest)
                                             }}>COMPLETE</button>
+                                        </div>
                                         </div>
                                     </div>
                                     :
