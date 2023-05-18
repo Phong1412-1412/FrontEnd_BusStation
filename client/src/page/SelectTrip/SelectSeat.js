@@ -11,6 +11,7 @@ import { WS_URL } from '../../constant/network';
 import Loading from '../../components/Loading/loading';
 import { getAllPayments } from '../../services/payment';
 import { countChair, cancellationCount } from '../../services/countChairs';
+import { faCarRear } from '@fortawesome/free-solid-svg-icons';
 
 export default function SelectSeat({ trip, car }) {
     const [order, setOrder] = useState(null)
@@ -21,6 +22,7 @@ export default function SelectSeat({ trip, car }) {
     const [cancelCount, setCancelCount] = useState(0)
 
     const [seats, setSeats] = useState(car.chair)
+    const [carId] = useState(car.carId)
 
     const [stompClient, setStompClient] = useState(null);
     const { accessToken, user } = useAuth()
@@ -241,7 +243,8 @@ export default function SelectSeat({ trip, car }) {
                 chairId: chair.chairId,
                 addressStart: trip.provinceStart,
                 addressEnd: trip.provinceEnd,
-                paymentId: payment.id
+                paymentId: payment.id,
+                carId: carId
             }
 
             setOrder({
