@@ -30,7 +30,7 @@ export default function AuthProvider({ children }) {
 		axios.defaults.headers.common.Authorization = `Bearer ${access_token}`
 		setAccessToken(access_token)
 		Cookies.set('access_token', access_token)
-		navigate("/Home")
+		navigate("/")
 	}
 
 	const signInWithGoogle = async (response) => {
@@ -43,7 +43,7 @@ export default function AuthProvider({ children }) {
 		axios.defaults.headers.common.Authorization = `Bearer ${access_token}`
 		setAccessToken(access_token)
 		Cookies.set('access_token', access_token)		
-		navigate(-1);
+		navigate("/")
 	}
 
 	const signOut = async () => {

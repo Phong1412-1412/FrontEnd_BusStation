@@ -13,6 +13,7 @@ import MyBookingPage from '../page/Mybooking';
 import PayTickets from '../page/Payment'
 import BookingDetails from '../page/BookingDetails';
 import VerifyAllDetails from '../page/VerifyAllDetails';
+import RatingPage from '../page/RatingPage';
 import DriverPage from '../page/Driver';
 
 
@@ -34,6 +35,7 @@ function Router() {
 			<Route path='/payment' element={<PayTickets />} />
 			<Route path='/booking-details' element={<BookingDetails />} />
 			<Route path='/verify-details' element={<VerifyAllDetails />} />
+			<Route path='/ratings' element={<RatingPage />} />
 			<Route path="/profile" element={<Profile />} />
 			<Route path="/driver/*" element={<DriverPage />} />
 			<Route path="/*" element={<Error />} />
