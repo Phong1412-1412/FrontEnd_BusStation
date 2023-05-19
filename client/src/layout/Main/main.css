@@ -1,3 +1,43 @@
 .content-wrap {
     min-height: calc(100vh - 205px);
-}
+    position: relative;
+  }
+  
+  .rating-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #41ae4a;
+    font-size: 24px;
+    z-index: 15;
+  }
+  
+  .rating-content {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 50%;
+    background-color: #fff;
+    z-index: 15;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    overflow-y: scroll;
+  }
+  
+  @media (max-width: 767px) {
+    .content-wrap {
+      min-height: calc(100vh - 205px);
+      position: relative;
+    }
+  
+    .rating-content {
+      left: 0;
+      width: 100%;
+      position: absolute;
+    }
+  }
+  

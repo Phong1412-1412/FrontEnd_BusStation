@@ -18,7 +18,7 @@ function VerifyAllDetails() {
 	const [order, setOrder] = useState([]);
 	const [isEditing, setIsEditing] = useState(false);
 	const [fullName, setFullName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  	const [phoneNumber, setPhoneNumber] = useState('');
 	const [sendEmail, setSendEmail] = useState(true);
 	const [isLoading, setIsLoading] = useState(false);
 	const handleDeleteOrder = async (orderId) => {
@@ -125,7 +125,6 @@ function VerifyAllDetails() {
 	};
 	
 	const handleSaveClick = () => {
-		// Gọi hàm editProfile để cập nhật thông tin khách hàng
 		editProfile(order.user.userId, fullName, phoneNumber, order.user.email, order.user.address);
 		setIsEditing(false);
 	};
