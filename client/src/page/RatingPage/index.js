@@ -196,7 +196,7 @@ function RatingPage() {
   };
 
   return (
-    <div className="container">
+    <div className="container-rating">
       {ratings.map(rating => renderRating(rating))}
       {renderPagination()}
 
