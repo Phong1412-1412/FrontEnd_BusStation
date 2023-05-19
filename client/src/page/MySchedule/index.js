@@ -41,6 +41,14 @@ export default function MySchedulePage() {
         };
       }, [overlayRef]);
 
+      const handleMouseEnter = () => {
+        setIsOpen(true);
+      };
+    
+      const handleMouseLeave = () => {
+        setIsOpen(false);
+      };
+
     //Get schedule of driver
     useEffect(() => {
         getSchedule(accessToken).then(res => {
@@ -181,7 +189,7 @@ export default function MySchedulePage() {
                     className={i === new Date().getDate() ? "active" : ""}
                 >
                     {i}
-                    <div style={{ display: 'contents' }}>
+                    <div style={{ display: 'contents'}}>
                         {
                             events.map((event, index) => (
                                 events.length === 1 ?
@@ -224,23 +232,48 @@ export default function MySchedulePage() {
                                     :
                                     <Popover key={event.tripId}
                                         content={
-                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                                                <div>
                                                 <p className='text-gray-900 font-bold'>Province Start:
                                                     <a className='text-blue-400'>{event.provinceStart}</a>
                                                 </p>
-                                                <p className='text-gray-900 font-bold'>Pickup Location:
-                                                    <a className='text-blue-400'>{event.pickupLocation}</a>
-                                                </p>
-                                                <p style={{ color: 'blue' }}>To</p>
+                                                <p style={{ color: 'blue', textAlign: 'center' }}>To</p>
                                                 <p className='text-gray-900 font-bold'>Province End:
                                                     <a className='text-green-400'> {event.provinceEnd}</a>
-                                                </p>
-                                                <p className='text-gray-900 font-bold'>Dropoff Location:
-                                                    <a className='text-green-400'>{event.dropOffLocation}</a>
-                                                </p>
+                                                </p>  
+                                                </div>
+                                                <div className='trip-details'>
+                                                    <div className='btn-listUser'>
+                                                        <button onClick={() => openNewPage(event.tripId)}>OPEN LIST USER</button>
+                                                            {
+                                                                isOpen && (
+                                                                    <div className='overlay'> 
+                                                                    <div className='comments-page' ref={overlayRef}>
+                                                                    <UsersTripPage tripId={event.tripId}></UsersTripPage>
+                                                                    </div>
+                                                                    </div>
+                                                                )
+                                                            }
+                                                                                                    <div className='btn-orderStatus'>
+                                                                <button onClick={() => {
+                                                                    setOrderRequest({
+                                                                        tripId: event.tripId
+                                                                    })
+                                                                    handleClickOnGoing(orderRequest)
+                                                                }}>ONGOING</button>
+                                                                <button onClick={() => {
+                                                                    setOrderRequest({
+                                                                        tripId: event.tripId
+                                                                    })
+                                                                    handleClickComplete(orderRequest)
+                                                                }}>COMPLETE</button>
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                             
                                             </div>
                                         }>
-                                        <p className='text-blue-500'>Ongoing:{event.timeStart.substring(11, 16)}</p>
+                                        <p className='text-blue-500'>{event.status}:{event.timeStart.substring(11, 16)}</p>
                                     </Popover>
                             ))
                         }

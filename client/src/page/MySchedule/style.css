@@ -1,3 +1,9 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 .my-schedule-page {
     display: block;
     margin-top: 24px;
@@ -183,4 +189,25 @@ ul {
 .text-blue-500 {
     color: black;
     font-weight: 900;
+}
+
+.trip-details {
+    width: 100%;
+    padding: 10px;
+    background-color:yellow ;
+    border-radius: 10px;
+}
+
+.btn-listUser {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.btn-listUser >button {
+    background: #000000;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-bottom: 5px;
 }
