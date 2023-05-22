@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useAuth } from '../../contexts/auth'
-import { submitOrder } from '../../services/order'
+import { submitOrder, countOrderPaymentAtStation } from '../../services/order'
 import { message } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { WS_URL } from '../../constant/network';
@@ -32,6 +32,20 @@ export default function SelectSeat({ trip, car }) {
     const [payment , setPayment] = useState(0);
 
 	const [infor, setInfor] = useState({});
+    const [orderCount, setOrderCount] = useState(null)
+
+    useEffect(() => {
+        const fetchData = async () => {          
+          try {
+            const data = await countOrderPaymentAtStation(trip.tripId, accessToken);
+            setOrderCount(data);
+          } catch (error) {
+            setOrderCount(null);
+          }
+        };
+    
+        fetchData();
+      }, []);
 
 	useEffect(() => {
 		const fetchUser = async () => {
@@ -294,6 +308,11 @@ export default function SelectSeat({ trip, car }) {
 
             if(!payment.id) {     
                 message.error("payment id is null !")
+                return;
+            }
+
+            if(orderCount > 3 && payment.id !== 2) {
+                message.error("You already have more than 3 seats booked using the payment method at the garage. Please change the payment method to wire transfer to continue.!")
                 return;
             }
 

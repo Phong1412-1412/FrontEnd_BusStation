@@ -12,6 +12,24 @@ async function submitOrder(order) {
     }
 }
 
+async function countOrderPaymentAtStation(tripId, accessToken) {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
+        }
+      };
+  
+      const { data } = await axios.get(`${BASE_URL}/api/v1/orders/countOrderByPaymentAtStation?tripId=${tripId}`, null, config);
+      if (!data) throw new Error();
+      return data;
+    } catch (error) {
+      return null;
+    }
+    }
+
 export {
-    submitOrder
+    submitOrder,
+    countOrderPaymentAtStation
 }
