@@ -14,6 +14,7 @@ export default function MySchedulePage() {
     const [orderRequest, setOrderRequest] = useState({
         tripId: ""
     })
+    const [openTripId, setOpenTripId] = useState(null);
 
     const { accessToken } = useAuth();
     //Get current day
@@ -23,6 +24,7 @@ export default function MySchedulePage() {
     const [isOpen, setIsOpen] = useState(false);
     function openNewPage(tripId) {
         setIsOpen(true)
+        setOpenTripId(tripId);
     };
     useEffect(() => {
         function handleClickOutside(event) {
@@ -205,7 +207,7 @@ export default function MySchedulePage() {
                                         <div className='btn-listUser'>
                                         <button onClick={() => openNewPage(event.tripId)}>OPEN LIST USER</button>
                                         {
-                                            isOpen && (
+                                            isOpen && openTripId === event.tripId && (
                                                 <div className='overlay'> 
                                                 <div className='comments-page' ref={overlayRef}>
                                                 <UsersTripPage tripId={event.tripId}></UsersTripPage>

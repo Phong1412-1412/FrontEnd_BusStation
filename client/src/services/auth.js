@@ -52,10 +52,21 @@ async function register(password, fullname, phoneNumber, email, address) {
 	}
 }
 
+async function getVerification(userId) {
+    try {
+        const { data, error } = await axios.get(`${BASE_URL}/api/v1/auth/getVerificationToken/${userId}`)
+        if (!data || error) throw new Error()
+
+        return data
+    } catch (error) {
+        return null
+    }
+}
 
 
 export {
 	login, 
 	register,
-	loginWithGoogle
+	loginWithGoogle,
+	getVerification
 }

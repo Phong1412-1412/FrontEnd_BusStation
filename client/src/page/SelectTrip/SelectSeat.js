@@ -12,6 +12,7 @@ import Loading from '../../components/Loading/loading';
 import { getAllPayments } from '../../services/payment';
 import { countChair, cancellationCount } from '../../services/countChairs';
 import { faCarRear } from '@fortawesome/free-solid-svg-icons';
+import { getUser } from '../../services/account';
 
 export default function SelectSeat({ trip, car }) {
     const [order, setOrder] = useState(null)
@@ -29,6 +30,23 @@ export default function SelectSeat({ trip, car }) {
 
     const [selectPayment, setSelectPayment] = useState([]);
     const [payment , setPayment] = useState(0);
+
+	const [infor, setInfor] = useState({});
+
+	useEffect(() => {
+		const fetchUser = async () => {
+			try {
+				const userData = await getUser();
+				setInfor(userData);
+			}
+			catch (err) {
+				console.error(err);
+			}
+		};
+		if(user) {
+			fetchUser();
+		}
+	}, [user])
 
     useEffect(() => {
         (async() => {
@@ -263,6 +281,12 @@ export default function SelectSeat({ trip, car }) {
     const onSubmitOrder = async () => {
         setIsLoading(true);
         try {
+
+            if(infor && !infor.user.status) {
+                message.error("Please verify your account to continue!")
+                return;
+            }
+
             if (!order || !order?.orderId) {
                 message.error("Please pick a car before submit order !")
                 return;
@@ -282,6 +306,7 @@ export default function SelectSeat({ trip, car }) {
                 message.error("You have canceled the trip more than 3 times, please change the payment method to transfer payment to continue.")
                 return;
             }
+
 
             const data = await submitOrder({ orderId: order.orderId, tripId: trip.tripId, paymentId: payment.id})
     
