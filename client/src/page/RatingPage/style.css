@@ -124,3 +124,15 @@ hr {
   cursor: not-allowed;
 }
 
+.ordered-icon {
+  color: green; /* Màu sắc của icon */
+  margin-left: 5px; /* Khoảng cách giữa icon và ngày tạo */
+}
+
+.ordered-text {
+  color: green; /* Màu sắc của chữ "Ordered" */
+  display: inline; /* Đảm bảo hiển thị trên cùng một dòng với icon */
+  margin-left: 5px; /* Khoảng cách giữa icon và chữ "Ordered" */
+}
+
+

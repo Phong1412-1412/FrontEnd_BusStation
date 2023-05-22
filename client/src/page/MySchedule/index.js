@@ -43,20 +43,12 @@ export default function MySchedulePage() {
         };
       }, [overlayRef]);
 
-      const handleMouseEnter = () => {
-        setIsOpen(true);
-      };
-    
-      const handleMouseLeave = () => {
-        setIsOpen(false);
-      };
-
     //Get schedule of driver
     useEffect(() => {
         getSchedule(accessToken).then(res => {
             setSchedule(res);
         })
-    }, [])
+    }, [accessToken])
 
     //Click prev month
     const handlePrevMonth = () => {
@@ -127,6 +119,10 @@ export default function MySchedulePage() {
           } catch (error) {
             console.error(error);
           }
+
+        getSchedule(accessToken).then(res => {
+            setSchedule(res);
+        });
     }
 
    async function handleClickComplete(orderRequest) {
@@ -153,6 +149,11 @@ export default function MySchedulePage() {
           } catch (error) {
             console.error(error);
           }
+
+        getSchedule(accessToken).then(res => {
+            setSchedule(res);
+        });
+         
     }
     //render day month and event in day
     const renderCalendar = () => {
@@ -195,7 +196,7 @@ export default function MySchedulePage() {
                         {
                             events.map((event, index) => (
                                 events.length === 1 ?
-                                    <div key={event.tripId} style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'yellow' }}>
+                                    <div key={event.tripId} style={{ display: 'flex', flexDirection: 'column', backgroundColor: event.status === 'COMPLETE'? '#83f091' : 'yellow'   }}>
                                         {/* If time start < currentDay then this trip is finish */}
                                         {event.timeStart < currentDay ?
                                             <p className='text-green-500 font-bold'>Finish</p>
@@ -216,18 +217,33 @@ export default function MySchedulePage() {
                                             )
                                         }
                                         <div className='btn-orderStatus'>
-                                            <button onClick={() => {
-                                                setOrderRequest({
+                                            {
+                                            event.status === "PREPARE"? (<button onClick={ async () => {
+                                                await setOrderRequest({
+                                                    tripId: event.tripId
+                                                });
+                                                setOrderRequest(prevOrderRequest => {
+                                                    if (prevOrderRequest.tripId !== null) {
+                                                      handleClickOnGoing(prevOrderRequest);
+                                                    }
+                                                    return prevOrderRequest;
+                                                });
+                                               
+                                            }}>ONGOING</button>) 
+                                            :  (   
+                                            <button style={{display: event.status === "COMPLETE"? 'none' : 'block'}} onClick={async () => {
+                                                await setOrderRequest({
                                                     tripId: event.tripId
                                                 })
-                                                handleClickOnGoing(orderRequest)
-                                            }}>ONGOING</button>
-                                            <button onClick={() => {
-                                                setOrderRequest({
-                                                    tripId: event.tripId
-                                                })
-                                                handleClickComplete(orderRequest)
-                                            }}>COMPLETE</button>
+                                                setOrderRequest(prevOrderRequest => {
+                                                    if (prevOrderRequest.tripId !== null) {
+                                                      handleClickComplete(prevOrderRequest);
+                                                    }
+                                                    return prevOrderRequest;
+                                                });
+                                            }}>COMPLETE
+                                            </button>)
+                                            } 
                                         </div>
                                         </div>
                                     </div>
@@ -244,7 +260,7 @@ export default function MySchedulePage() {
                                                     <a className='text-green-400'> {event.provinceEnd}</a>
                                                 </p>  
                                                 </div>
-                                                <div className='trip-details'>
+                                                <div className='trip-details' style={{ backgroundColor: event.status === 'COMPLETE'? '#83f091' : 'yellow'}}>
                                                     <div className='btn-listUser'>
                                                         <button onClick={() => openNewPage(event.tripId)}>OPEN LIST USER</button>
                                                             {
@@ -256,19 +272,35 @@ export default function MySchedulePage() {
                                                                     </div>
                                                                 )
                                                             }
-                                                                                                    <div className='btn-orderStatus'>
-                                                                <button onClick={() => {
-                                                                    setOrderRequest({
-                                                                        tripId: event.tripId
-                                                                    })
-                                                                    handleClickOnGoing(orderRequest)
+                                                            <div className='btn-orderStatus'>
+                                                                {
+                                                                    event.status === 'PREPARE'?(
+                                                                        <button onClick={async () => {
+                                                                            await setOrderRequest({
+                                                                                tripId: event.tripId
+                                                                            });
+                                                                            setOrderRequest(prevOrderRequest => {
+                                                                                if (prevOrderRequest.tripId !== null) {
+                                                                                  handleClickOnGoing(prevOrderRequest);
+                                                                                }
+                                                                                return prevOrderRequest;
+                                                                            });
                                                                 }}>ONGOING</button>
-                                                                <button onClick={() => {
-                                                                    setOrderRequest({
-                                                                        tripId: event.tripId
-                                                                    })
-                                                                    handleClickComplete(orderRequest)
+                                                                    ):
+                                                                    (
+                                                                    <button style={{display: event.status === "COMPLETE"? 'none' : 'block'}} onClick={async () => {
+                                                                        await setOrderRequest({
+                                                                            tripId: event.tripId
+                                                                        })
+                                                                        setOrderRequest(prevOrderRequest => {
+                                                                            if (prevOrderRequest.tripId !== null) {
+                                                                              handleClickComplete(prevOrderRequest);
+                                                                            }
+                                                                            return prevOrderRequest;
+                                                                        });
                                                                 }}>COMPLETE</button>
+                                                                    )
+                                                                }  
                                                     </div>
                                                     </div>
                                                 </div>

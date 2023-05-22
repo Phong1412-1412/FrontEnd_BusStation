@@ -3,6 +3,8 @@ import axios from 'axios';
 import './style.css';
 import { useAuth } from '../../contexts/auth';
 import { message } from 'antd';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 function RatingPage() {
   const [ratings, setRatings] = useState([]);
@@ -96,10 +98,14 @@ function RatingPage() {
         <p className="fullname">{rating.user.fullName}</p>
         <div className="star-rating">{stars}</div>
         <p className="content">{rating.content}</p>
-        <p className="created-at">{rating.createdAt}</p>
+        <p className="created-at">
+          {rating.createdAt} {rating.haveOrder && <FontAwesomeIcon icon={faCheck} className="ordered-icon" />} 
+          {rating.haveOrder && <span className="ordered-text">Ordered</span>}
+        </p>
         <hr />
       </div>
     );
+    
   };
 
   const handleHoverRating = (rating) => {
@@ -145,7 +151,7 @@ function RatingPage() {
           message.error('Failed to submit rating. Please hover rating.');
           return;
         }
-        message.error('Failed to submit rating. Please try again.');
+        message.error(error.response.data);
       });
   };
 
